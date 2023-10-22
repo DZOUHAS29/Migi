@@ -18,7 +18,10 @@ export default function TopBar() {
                                 <Icon as={BiUserCircle} className="text-3xl cursor-pointer hover:text-blue-500" />
                             </div>
                             <div className="grid p-3 justify-end">
-                                <IconButton aria-label="menu" className="bg-blue-400 hover:bg-blue-500 w-4" icon={<HiMenu />} />
+                                <IconButton aria-label="menu" variant={"outline"}
+                                    className="border-2 hover:bg-slate-900 hover:text-blue-500 hover:border-blue-500 bg-none border-blue-400 bg-blue-none text-blue-400 w-4"
+                                    icon={<HiMenu />}
+                                />
                             </div>
                         </div>
                     </div>

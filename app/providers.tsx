@@ -2,6 +2,7 @@
 
 import { CacheProvider } from '@chakra-ui/next-js';
 import { ChakraProvider } from "@chakra-ui/react";
+import { ChartsContextProvider } from './contexts/charts';
 
 export function Providers({
   children
@@ -11,7 +12,9 @@ export function Providers({
   return (
     <CacheProvider>
       <ChakraProvider>
-        {children}
+        <ChartsContextProvider>
+          {children}
+        </ChartsContextProvider>
       </ChakraProvider>
     </CacheProvider>
   )
