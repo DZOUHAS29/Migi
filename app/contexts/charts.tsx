@@ -1,8 +1,12 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
+
+interface ChartsContextProps {
+    children: ReactNode
+}
 
 type ChartsContextType = {
     data: object,
-    setData: (data: any) => void
+    setData: (data: ChartData) => void
 }
 
 type ChartData = {
@@ -22,7 +26,7 @@ const ChartsContext = createContext<ChartsContextType>({
     setData: () => { }
 });
 
-export const ChartsContextProvider = (props: any) => {
+export const ChartsContextProvider = ({ children }: ChartsContextProps)  => {
     const [data, setData] = useState<ChartData>({
         labels: [""],
         datasets: [
@@ -43,7 +47,7 @@ export const ChartsContextProvider = (props: any) => {
                 setData: setData
             }}
         >
-            {props.children}
+            {children}
         </ChartsContext.Provider>
     )
 }

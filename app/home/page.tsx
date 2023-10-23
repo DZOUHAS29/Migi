@@ -3,7 +3,7 @@ import { Component, useEffect, useState } from "react";
 import { Input } from "@chakra-ui/react";
 import moment from "moment";
 import { DayCard } from "./components/DayCard";
-import { Line, PolarArea, Radar } from "react-chartjs-2";
+import { Line, Pie, PolarArea, Radar } from "react-chartjs-2";
 import { useCharts } from "../contexts/charts";
 import 'chart.js/auto';
 
@@ -11,24 +11,24 @@ const options = {
     scales: {
         x: {
             grid: {
-                color: "rgba(96, 165, 250, 0.3)",
+                color: "rgb(2 6 23)",
             },
             ticks: {
-                color: "rgba(96, 165, 250, 0.3)"
+                color: "rgb(96 165 250)"
             },
             title: {
-                color: "rgba(96, 165, 250, 0.3)"
+                color: "rgb(96 165 250)"
             }
         },
         y: {
             grid: {
-                color: "rgba(96, 165, 250, 0.3)",
+                color: "rgb(2 6 23)",
             },
             ticks: {
-                color: "rgba(96, 165, 250, 0.3)"
+                color: "rgb(96 165 250)"
             },
             title: {
-                color: "rgba(96, 165, 250, 0.3)"
+                color: "rgb(96 165 250)"
             }
         }
     }
@@ -37,32 +37,6 @@ const options = {
 export default function Page() {
     const { data, setData } = useCharts();
     const [dates, setDates] = useState<string[]>([]);
-
-    const PolarAreaChartComponent = () => {
-        const data = {
-            labels: ['Red', 'Green', 'Yellow'],
-            datasets: [{
-                data: [11, 16, 7],
-                backgroundColor: [
-                    'rgba(255, 99, 132)',
-                    'rgba(75, 192, 192)',
-                    'rgba(255, 206, 86)',
-                ],
-                label: 'My dataset' // for legend
-            }],
-        };
-
-        const options = {
-            scale: {
-                display: false
-            }
-        };
-
-        return (
-            <PolarArea data={data} options={options} />
-        );
-    };
-
 
     useEffect(() => {
         getDates();
@@ -79,8 +53,8 @@ export default function Page() {
                     label: "Migraines",
                     data: dates.map(day => Math.random() * 6),
                     tension: 0.2,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 0.6)'
+                    backgroundColor: 'rgb(96 165 250)',
+                    borderColor: 'rgb(96 165 250)'
                 }
             ]
         });
@@ -102,14 +76,18 @@ export default function Page() {
     return (
         <div className="flex-row">
             <div className="grid">
-                <div className="flex pr-10 pl-10">
+                <div className="flex pb-1 pl-9 pr-1 w-8/12">
                     <div className="grid self-center rounded">
-                        <text className="text-2xl font-mono text-center p-1 font-bold">
-                            Měsíční přehled
-                        </text>
+                        <p className="text-2xl font-mono text-center p-1 font-bold">
+                            Monthly overview
+                        </p>
                     </div>
                     <div className="grid flex-1 justify-end">
-                        <Input type="month" className="border-blue-400 hover:border-blue-500 hover:text-blue-500" />
+                        <input
+                            type="month"
+                            className="bg-slate-900 rounded border-blue-400 hover:border-blue-500
+                             hover:text-blue-500 font-mono"
+                        />
                     </div>
                 </div>
             </div>
@@ -125,12 +103,22 @@ export default function Page() {
                     <div className="grid flex-grow p-1">
                         <div className="flex-row">
                             <div className="grid">
+                                <p className="text-1xl font-mono p-1 font-semibold">
+                                    Monthly graph
+                                </p>
+                            </div>
+                            <div className="grid">
                                 <Line data={data} options={options} />
                             </div>
-                            <div className="grid py-4">
-                                {
-                                    PolarAreaChartComponent()
-                                }
+                            <div className="grid">
+                                <p className="text-1xl font-mono p-1 font-semibold">
+                                    Last records
+                                </p>
+                            </div>
+                            <div className="grid">
+                                <p className="text-center text-sm p-1 font-mono">
+                                    No records found
+                                </p>
                             </div>
                         </div>
                     </div>

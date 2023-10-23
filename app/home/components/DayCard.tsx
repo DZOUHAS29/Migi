@@ -4,13 +4,13 @@ import { FiSunrise } from "@react-icons/all-files/fi/FiSunrise";
 import { FiSun } from "@react-icons/all-files/fi/FiSun";
 import { FiSunset } from "@react-icons/all-files/fi/FiSunset";
 
-type props = {
+interface props {
     day: string;
 }
 
-const style: any = {
+const style = {
     current: "bg-blue-400 border-none hover:bg-blue-500 hover:cursor-pointer",
-    normal: "bg-blue-950 text-blue-400  hover:border-blue-500 hover:text-blue-500 hover:cursor-pointer"
+    normal: "bg-slate-950 bg-opacity-60 text-blue-400 hover:bg-slate-950  hover:border-blue-500 hover:text-blue-500 hover:cursor-pointer"
 }
 
 export const DayCard: React.FC<props> = ({ day }) => {
