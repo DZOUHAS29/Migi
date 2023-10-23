@@ -1,9 +1,9 @@
 "use client"
-import { useEffect, useState } from "react";
+import { Component, useEffect, useState } from "react";
 import { Input } from "@chakra-ui/react";
 import moment from "moment";
 import { DayCard } from "./components/DayCard";
-import { Line } from "react-chartjs-2";
+import { Line, PolarArea, Radar } from "react-chartjs-2";
 import { useCharts } from "../contexts/charts";
 import 'chart.js/auto';
 
@@ -14,21 +14,21 @@ const options = {
                 color: "rgba(96, 165, 250, 0.3)",
             },
             ticks: {
-                color: "rgba(96, 165, 250, 0.3)" 
+                color: "rgba(96, 165, 250, 0.3)"
             },
             title: {
-                color: "rgba(96, 165, 250, 0.3)"  
+                color: "rgba(96, 165, 250, 0.3)"
             }
         },
         y: {
             grid: {
-                color: "rgba(96, 165, 250, 0.3)",  
+                color: "rgba(96, 165, 250, 0.3)",
             },
             ticks: {
-                color: "rgba(96, 165, 250, 0.3)"  
+                color: "rgba(96, 165, 250, 0.3)"
             },
             title: {
-                color: "rgba(96, 165, 250, 0.3)"  
+                color: "rgba(96, 165, 250, 0.3)"
             }
         }
     }
@@ -37,6 +37,32 @@ const options = {
 export default function Page() {
     const { data, setData } = useCharts();
     const [dates, setDates] = useState<string[]>([]);
+
+    const PolarAreaChartComponent = () => {
+        const data = {
+            labels: ['Red', 'Green', 'Yellow'],
+            datasets: [{
+                data: [11, 16, 7],
+                backgroundColor: [
+                    'rgba(255, 99, 132)',
+                    'rgba(75, 192, 192)',
+                    'rgba(255, 206, 86)',
+                ],
+                label: 'My dataset' // for legend
+            }],
+        };
+
+        const options = {
+            scale: {
+                display: false
+            }
+        };
+
+        return (
+            <PolarArea data={data} options={options} />
+        );
+    };
+
 
     useEffect(() => {
         getDates();
@@ -97,7 +123,16 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="grid flex-grow p-1">
-                        <Line data={data} options={options} />
+                        <div className="flex-row">
+                            <div className="grid">
+                                <Line data={data} options={options} />
+                            </div>
+                            <div className="grid py-4">
+                                {
+                                    PolarAreaChartComponent()
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
