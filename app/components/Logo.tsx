@@ -3,13 +3,14 @@ import { BiBrain } from "@react-icons/all-files/bi/BiBrain";
 
 export default function Logo() {
     return (
-        <Grid templateColumns={"repeat(2, 0fr)"}>
-            <GridItem className="py-1">
-                <Icon as={BiBrain} fontSize={"4xl"} />
-            </GridItem>
-            <GridItem className="px-2">
-                <Heading fontFamily={"mono"}>Migi</Heading>
-            </GridItem>
-        </Grid>
+        <div className="flex">
+            <div className="grid">
+                <Icon as={BiBrain} fontSize={"5xl"} />
+            </div>
+            <div className="grid text-3xl content-center">
+                Migi
+            </div>
+        </div>
+
     )
 }

@@ -19,11 +19,11 @@ export default function TopBar() {
                     <div className="grid flex-1 justify-end">
                         <div className="flex">
                             <div className="grid p-3 py-4">
-                                <Icon as={BiUserCircle} className="text-3xl cursor-pointer hover:text-blue-500" />
+                                <Icon as={BiUserCircle} className="text-3xl cursor-pointer" />
                             </div>
                             <div className="grid p-3 justify-end">
                                 <IconButton aria-label="menu" variant={"outline"}
-                                    className="border-2 hover:bg-slate-900 hover:text-blue-500 hover:border-blue-500 bg-none border-blue-400 bg-blue-none text-blue-400 w-4"
+                                    className="border-2 bg-blue-300 hover:bg-emerald-600 bg-none border-slate-900 text-slate-900 w-4"
                                     icon={<HiMenu />}
                                     onClick={() => { setOpen(true) }}
                                 />
