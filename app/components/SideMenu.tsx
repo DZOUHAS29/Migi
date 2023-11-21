@@ -16,12 +16,12 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
 
     return (
         <div
-            className={`w-1/4 h-full bg-slate-950 bg-opacity-95 ${transition} fixed 
+            className={`w-1/4 h-full bg-blue-400 bg-opacity-95 ${transition} fixed 
             rounded right-0 top-0 bottom-0 transition ease-linear z-10`}
         >
             <div className="flex-row">
                 <div className="grid justify-end p-4 hover:text-blue-500">
-                    <button className="text-3xl font-bold hover:bg-slate-900 rounded-full"
+                    <button className="text-3xl"
                         onClick={() => { setOpen(false) }}
                     >
                         <IoClose />
@@ -33,7 +33,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <div className="grid self-center text-4xl">
                                 <BiHomeSmile />
                             </div>
-                            <div className="grid self-center font-mono pl-5 pt-1 font-bold text-2xl">
+                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
                                 <h5>
                                     Home
                                 </h5>
@@ -47,7 +47,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <div className="grid self-center text-4xl">
                                 <IoStatsChart />
                             </div>
-                            <div className="grid self-center font-mono pl-5 pt-1 font-bold text-2xl">
+                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
                                 <h5>
                                     Statistics
                                 </h5>
@@ -61,7 +61,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <div className="grid self-center text-4xl">
                                 <BiUser />
                             </div>
-                            <div className="grid self-center font-mono pl-5 pt-1 font-bold text-2xl">
+                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
                                 <h5>
                                     Profile
                                 </h5>
@@ -75,7 +75,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <div className="grid self-center text-4xl">
                                 <IoIosSettings />
                             </div>
-                            <div className="grid self-center font-mono pl-5 pt-1 font-bold text-2xl">
+                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
                                 <h5>
                                     Settings
                                 </h5>
@@ -89,7 +89,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <div className="grid self-center text-4xl">
                                 <BiLogOut />
                             </div>
-                            <div className="grid self-center font-mono pl-5 pt-1 font-bold text-2xl">
+                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
                                 <h5>
                                     Log out
                                 </h5>

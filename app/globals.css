@@ -5,3 +5,28 @@
 ::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
+
+@media (max-width: 480px) {
+    .xs-column {
+        grid-column: span 3 / span 3;
+    }
+    .center-text {
+        text-align: center;
+    }
+}
+@media (max-width: 768px) {
+    .xs-column {
+        grid-column: span 3 / span 3;
+    }
+    .center-text {
+        text-align: center;
+    }
+}
+@media (max-width: 1024px) {
+    .xs-column {
+        grid-column: span 3 / span 3;
+    }
+    .center-text {
+        text-align: center;
+    }
+}
