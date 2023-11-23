@@ -1,6 +1,4 @@
-"use client"
 import { Component, useEffect, useState } from "react";
-import { Input } from "@chakra-ui/react";
 import moment from "moment";
 import { DayCard } from "./components/DayCard";
 import { Line, Pie, PolarArea, Radar } from "react-chartjs-2";
