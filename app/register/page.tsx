@@ -1,26 +1,20 @@
+"use client"
 import Link from "next/link";
+import { useState } from "react";
+import { register } from "@/app/actions"
+
+interface Warning {
+    message: string,
+    variant: string
+}
 
 export default function Register() {
+    const [warning, setWarning] = useState<Warning>({ message: "", variant: "" });
 
-    const register = async (formData: globalThis.FormData): Promise<void> => {
-        "use server"
-        const username = formData.get("username");
-        const email = formData.get("email");
-        const password = formData.get("password");
-        const repassword = formData.get("repassword");
-
-        if (username === "" || email === "" || password === "" || repassword === "")
-            return console.log("empty inputs");
-
-        if (password !== repassword )
-            return console.log("passwords are different");
-       /*      
-        try {
-
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        } */
+    const submit = async (formData: FormData) => {
+        const data = await register(formData);
+        
+        setWarning(data);
     }
 
     return (
@@ -66,8 +60,16 @@ export default function Register() {
                             <p className="">Enter password again</p>
                             <input type="password" name="repassword" className="rounded bg-blue-300 p-1" />
                         </div>
+                        <div className="grid">
+                            {
+                                warning.variant === "" ?
+                                    <></>
+                                    :
+                                    <span className={`${warning.variant === "error" ? "text-red-700" : "text-green-600"} p-2 text-center`}>{warning.message}</span>
+                            }
+                        </div>
                         <div className="grid justify-center  p-2">
-                            <button type="submit" className="bg-blue-400 hover:bg-blue-500 p-2 rounded" formAction={register}>Register</button>
+                            <button className="bg-blue-400 hover:bg-blue-500 p-2 rounded" formAction={submit}>Register</button>
                         </div>
                         <div className="grid justify-center p-2">
                             <Link href={"/"} className="text-sm underline ">Log in</Link>

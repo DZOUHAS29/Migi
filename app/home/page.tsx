@@ -1,3 +1,4 @@
+"use client"
 import { Component, useEffect, useState } from "react";
 import moment from "moment";
 import { DayCard } from "./components/DayCard";

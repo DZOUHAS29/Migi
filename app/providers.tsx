@@ -12,9 +12,9 @@ export function Providers({
   return (
     <CacheProvider>
       <ChakraProvider>
-        <ChartsContextProvider>
-          {children}
-        </ChartsContextProvider>
+          <ChartsContextProvider>
+            {children}
+          </ChartsContextProvider>
       </ChakraProvider>
     </CacheProvider>
   )
