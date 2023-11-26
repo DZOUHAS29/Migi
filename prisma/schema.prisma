@@ -11,16 +11,16 @@ datasource db {
 }
 
 model users {
-  id             Int             @id @default(autoincrement())
-  username       String          @unique @db.VarChar(50)
-  email          String          @unique @db.VarChar(100)
-  password       String          @db.VarChar(60)
-  refresh_tokens refresh_tokens?
+  id             Int              @id @default(autoincrement())
+  username       String           @unique @db.VarChar(50)
+  email          String           @unique @db.VarChar(100)
+  password       String           @db.VarChar(60)
+  refresh_tokens refresh_tokens[]
 }
 
 model refresh_tokens {
   id      Int    @id @default(autoincrement())
-  user    users  @relation(fields: [user_id], references: [id])
-  user_id Int    @unique
+  user    users  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id Int
   token   String @db.VarChar(300)
 }

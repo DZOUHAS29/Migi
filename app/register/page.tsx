@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { register } from "@/app/actions"
+import { redirect } from "next/navigation";
 
 interface Warning {
     message: string,
@@ -11,10 +12,13 @@ interface Warning {
 export default function Register() {
     const [warning, setWarning] = useState<Warning>({ message: "", variant: "" });
 
-    const submit = async (formData: FormData) => {
+    const submit = async (formData: globalThis.FormData) => {
         const data = await register(formData);
-        
+
         setWarning(data);
+
+        if (data.variant === "success")
+            return redirect("/home");
     }
 
     return (

@@ -1,15 +1,55 @@
 "use server"
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 import { cookies } from "next/headers";
 
 interface Output {
-    message: string,
-    variant: string
+    message: string;
+    variant: string;
+}
+
+interface User {
+    id: number | string;
+    username: string;
+    email: string;
+    password: string;
 }
 
 const prisma = new PrismaClient();
+
+const signTokens = async (user: User): Promise<void> => {
+    const payload = {
+        sub: user.id as string,
+        username: user.username,
+        role: "user"
+    }
+
+    const secret = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
+    const refreshSecret = new TextEncoder().encode(process.env.JWT_SIGN_REFRESH_SECRET);
+
+    const token = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(secret);
+    const refresh = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(refreshSecret);
+
+    //uloží do db refresh token
+    await prisma.refresh_tokens.create({
+        data: {
+            token: refresh,
+            user_id: user.id as number
+        }
+    });
+
+    //nastavit secure cookie pro token
+    cookies().set({
+        name: "jwt",
+        value: token,
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+        maxAge: 60 * 60,
+        path: "/"
+    });
+}
 
 export const register = async (formData: FormData): Promise<Output> => {
     const username = formData.get("username");
@@ -31,41 +71,53 @@ export const register = async (formData: FormData): Promise<Output> => {
         //přidání usera do db
         const user = await prisma.users.create({
             data: {
-                username: `${username}`,
-                email: `${email}`,
-                password: `${hash}`
+                username: username as string,
+                email: email as string,
+                password: hash as string
             }
         });
 
         //vygenerovat a přiřadit JWT token
-        const payload = {
-            sub: user.id,
-            username: user.username,
-            role: "user"
-        }
-        const token = jwt.sign(payload, JSON.stringify(process.env.JWT_SIGN_SECRET), { expiresIn: "60s" });
-        const refresh = jwt.sign(payload, JSON.stringify(process.env.JWT_SIGN_REFRESH_SECRET), { expiresIn: "5m" });
+        await signTokens(user);
 
-        //uloží do db refresh token
-        await prisma.refresh_tokens.create({
-            data: {
-                token: refresh,
-                user_id: user.id
+        return { message: "User successfully added", variant: "success" };
+    } catch (error) {
+        return { message: `${error}`, variant: "error" };
+    }
+}
+
+export const login = async (formData: FormData): Promise<Output> => {
+    const name = formData.get("name");
+    const password = formData.get("password");
+
+    try {
+        //kontrola inputů
+        if (name === "" || password === "")
+            throw new Error("Some inputs are empty");
+
+        const user = await prisma.users.findFirst({
+            where: {
+                OR: [
+                    {
+                        username: name as string
+                    },
+                    {
+                        email: name as string
+                    }
+                ]
             }
         });
 
-        //nastavit secure cookie pro token
-        cookies().set({
-            name: "jwt",
-            value: token,
-            httpOnly: true,
-            sameSite: "strict",
-            secure: true,
-            maxAge: 30,
-            path: "/"
-        });
+        if (!user)
+            throw new Error("User doesn't exist");
 
-        return { message: "User successfully added", variant: "success" };
+        if (!await bcrypt.compare(password as string, user.password))
+            throw new Error("Password is incorrect");
+
+        //vygenerovat a přiřadit JWT token
+        await signTokens(user)
+
+        return { message: "Successfully logged in", variant: "success" };
     } catch (error) {
         return { message: `${error}`, variant: "error" };
     }

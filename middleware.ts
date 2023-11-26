@@ -1,28 +1,43 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from 'next/server';
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     //zjistí jestli se v cookies nachází jwt
     let exists = request.cookies.has("jwt");
 
     if (!exists)
-        return NextResponse.redirect(new URL("/register", request.url));
+        return NextResponse.redirect(new URL("/login", request.url));
 
 
     //parsne jwt a zkontroluje
     const cookie = request.cookies.get("jwt")?.value;
     const secret = process.env.JWT_SIGN_SECRET;
+    const key = new TextEncoder().encode(secret);
 
     if (!cookie || !secret)
-        return NextResponse.redirect(new URL("/register", request.url));
+        return NextResponse.redirect(new URL("/login", request.url));
 
     try {
-        const decoded = jwt.verify(cookie, secret);
+        const { payload } = await jwtVerify(cookie, key);
 
-        return NextResponse.json({ token: decoded }, { status: 200 });
+        const response = NextResponse.next();
+
+        if (!request.cookies.has("permission"))
+            response.cookies.set({
+                name: "permission",
+                value: payload.role as string,
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict",
+                maxAge: 60 * 60,
+                path: "/"
+            });
+
+        return response;
     } catch (error) {
-        return NextResponse.json({ message: error }, { status: 403 });
+        return NextResponse.redirect(new URL("/login", request.url));
     }
 }
 
