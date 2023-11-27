@@ -31,18 +31,28 @@ const signTokens = async (user: User): Promise<void> => {
     const token = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(secret);
     const refresh = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(refreshSecret);
 
-    //uloží do db refresh token
-    await prisma.refresh_tokens.create({
-        data: {
-            token: refresh,
-            user_id: user.id as number
-        }
-    });
+    //uloží do local storage refresh token
+    localStorage.setItem("refresh", refresh);
 
     //nastavit secure cookie pro token
     cookies().set({
         name: "jwt",
         value: token,
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+        maxAge: 60 * 60,
+        path: "/"
+    });
+
+    //nastavit usera
+    cookies().set({
+        name: "user",
+        value: JSON.stringify({
+            id: user.id,
+            username: user.username,
+            email: user.email
+        }),
         httpOnly: true,
         sameSite: "strict",
         secure: true,
@@ -122,3 +132,32 @@ export const login = async (formData: FormData): Promise<Output> => {
         return { message: `${error}`, variant: "error" };
     }
 }
+
+/* export const refresh = async (userId: number): Promise<Output> => {
+    try {
+        const token = await prisma.refresh_tokens.findFirst({
+            where: {
+                user_id: userId
+            },
+            orderBy: {
+                id: "desc"
+            }
+        });
+
+        if (!token)
+            return { message: "Refresh token doesn't exist", variant: "error" };
+
+        const secret = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
+
+        const { payload } = await jwtVerify(token.token, secret);
+
+        const access = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(key);
+
+
+
+
+        return { message: "", variant: "success" };
+    } catch (error) {
+        return { message: "Refresh token failed", variant: "error" };
+    }
+} */
