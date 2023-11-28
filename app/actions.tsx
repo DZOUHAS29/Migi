@@ -1,7 +1,7 @@
 "use server"
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { SignJWT } from 'jose';
+import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from "next/headers";
 
 interface Output {
@@ -26,13 +26,12 @@ const signTokens = async (user: User): Promise<void> => {
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
-    const refreshSecret = new TextEncoder().encode(process.env.JWT_SIGN_REFRESH_SECRET);
+    //const refreshSecret = new TextEncoder().encode(process.env.JWT_SIGN_REFRESH_SECRET);
 
-    const token = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(secret);
-    const refresh = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(refreshSecret);
+    const token = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("20s").setIssuedAt().sign(secret);
+    //const refresh = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(refreshSecret);
 
-    //uloží do local storage refresh token
-    localStorage.setItem("refresh", refresh);
+    //uloží do db refresh token
 
     //nastavit secure cookie pro token
     cookies().set({
@@ -133,11 +132,18 @@ export const login = async (formData: FormData): Promise<Output> => {
     }
 }
 
-/* export const refresh = async (userId: number): Promise<Output> => {
+export const refresh = async (): Promise<Output> => {
+    const user = cookies().get("user")?.value;
+
+    if (!user)
+        return { message: "User doesn't exist", variant: "error" };
+
+    const { id } = JSON.parse(user);
+
     try {
         const token = await prisma.refresh_tokens.findFirst({
             where: {
-                user_id: userId
+                user_id: id
             },
             orderBy: {
                 id: "desc"
@@ -147,17 +153,27 @@ export const login = async (formData: FormData): Promise<Output> => {
         if (!token)
             return { message: "Refresh token doesn't exist", variant: "error" };
 
-        const secret = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
+        const key = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
 
-        const { payload } = await jwtVerify(token.token, secret);
+        //zkontroluje refresh token
+        const { payload } = await jwtVerify(token.token, key);
 
+        //pokud je refresh token v pohodě přiřadí novej token
         const access = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(key);
 
+        //nastavit secure cookie pro token
+        cookies().set({
+            name: "jwt",
+            value: access,
+            httpOnly: true,
+            sameSite: "strict",
+            secure: true,
+            maxAge: 60 * 60,
+            path: "/"
+        });
 
-
-
-        return { message: "", variant: "success" };
+        return { message: "New Access token signed", variant: "success" };
     } catch (error) {
         return { message: "Refresh token failed", variant: "error" };
     }
-} */
+}

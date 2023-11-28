@@ -1,10 +1,11 @@
-import Link from "next/link";
-
-export default function Home() {
-
+export default function Home({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className="w-full h-5/6 p-10 grid grid-cols-3">
-      
-    </div>
+    <>
+      {children}
+    </>
   )
 }
