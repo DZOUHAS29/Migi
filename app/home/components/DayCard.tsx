@@ -10,14 +10,14 @@ interface props {
 
 const style = {
     current: "bg-blue-400 border-none hover:bg-blue-500 hover:cursor-pointer",
-    normal: "bg-slate-950 bg-opacity-60 text-blue-400 hover:bg-slate-950  hover:border-blue-500 hover:text-blue-500 hover:cursor-pointer"
+    normal: "bg-blue-300 hover:cursor-pointer hover:bg-blue-400"
 }
 
 export const DayCard: React.FC<props> = ({ day }) => {
     return (
         <Card
             className={day === moment().format("YYYY-MM-DD") ? style.current : style.normal}
-            variant={day === moment().format("YYYY-MM-DD") ? "outline" : "elevated"}
+            variant={"filled"}
         >
             <CardHeader>
                 <Heading className="font-mono text-lg">
@@ -39,7 +39,7 @@ export const DayCard: React.FC<props> = ({ day }) => {
             </CardBody>
             <CardFooter>
                 <Text className="font-bold">
-                    {moment(day).format("DD.MM.")}
+                    {moment(day).format("DD.M.")}
                 </Text>
             </CardFooter>
         </Card>

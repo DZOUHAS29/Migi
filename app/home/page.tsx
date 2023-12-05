@@ -5,6 +5,7 @@ import { DayCard } from "./components/DayCard";
 import { Line, Pie, PolarArea, Radar } from "react-chartjs-2";
 import { useCharts } from "../contexts/charts";
 import 'chart.js/auto';
+import { Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
 
 const options = {
     scales: {
@@ -34,12 +35,13 @@ const options = {
 };
 
 export default function Page() {
+    const [month, setMonth] = useState<string>(moment().format("YYYY-MM"));
     const { data, setData } = useCharts();
     const [dates, setDates] = useState<string[]>([]);
 
     useEffect(() => {
         getDates();
-    }, [])
+    }, [month])
 
     useEffect(() => {
         if (dates.length <= 0)
@@ -60,8 +62,8 @@ export default function Page() {
     }, [dates]);
 
     const getDates = (): void => {
-        let start = moment().startOf("month");
-        let end: number = moment().daysInMonth();
+        let start = moment(`${month}-1`);
+        let end = moment(`${month}-1`).daysInMonth();
         let days: string[] = [];
 
         for (let i = 0; i < end; i++) {
@@ -77,15 +79,16 @@ export default function Page() {
             <div className="grid">
                 <div className="flex pb-1 pl-9 pr-1 w-8/12">
                     <div className="grid self-center rounded">
-                        <p className="text-2xl font-mono text-center p-1 font-bold">
+                        <p className="text-2xl text-center p-1">
                             Monthly overview
                         </p>
                     </div>
                     <div className="grid flex-1 justify-end">
                         <input
                             type="month"
-                            className="bg-slate-900 rounded border-blue-400 hover:border-blue-500
-                             hover:text-blue-500 font-mono"
+                            value={month}
+                            className="rounded pl-1 pr-1 bg-blue-200"
+                            onChange={event => { setMonth(event.target.value) }}
                         />
                     </div>
                 </div>
@@ -102,20 +105,58 @@ export default function Page() {
                     <div className="grid flex-grow p-1">
                         <div className="flex-row">
                             <div className="grid">
-                                <p className="text-1xl font-mono p-1 font-semibold">
-                                    Monthly graph
-                                </p>
+                                <StatGroup>
+                                    <Stat>
+                                        <StatLabel>
+                                            Frequency of headaches
+                                        </StatLabel>
+                                        <StatNumber>
+                                            15
+                                        </StatNumber>
+                                        <StatHelpText>
+                                            <StatArrow type="increase" />
+                                            10%
+                                        </StatHelpText>
+                                    </Stat>
+                                    <Stat>
+                                        <StatLabel>
+                                            Migraines
+                                        </StatLabel>
+                                        <StatNumber>
+                                            4
+                                        </StatNumber>
+                                        <StatHelpText>
+                                            <StatArrow type="decrease" />
+                                            3%
+                                        </StatHelpText>
+                                    </Stat>
+                                </StatGroup>
                             </div>
                             <div className="grid">
-                                <Line data={data} options={options} />
+                                <PolarArea data={{
+                                    labels: [
+                                        'Morning',
+                                        'Afternoon',
+                                        'Evening',
+                                    ],
+                                    datasets: [{
+                                        label: 'My First Dataset',
+                                        data: [11, 16, 7],
+                                        backgroundColor: [
+                                            'rgb(249, 249, 249)',
+                                            'rgb(255, 228, 94)',
+                                            'rgb(255, 99, 146)',
+                                        ]
+                                    }]
+                                }} />
                             </div>
                             <div className="grid">
-                                <p className="text-1xl font-mono p-1 font-semibold">
+                                <p className="text-1xl p-1">
                                     Last records
                                 </p>
                             </div>
                             <div className="grid">
-                                <p className="text-center text-sm p-1 font-mono">
+                                <p className="text-center text-sm p-1">
                                     No records found
                                 </p>
                             </div>

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from 'next/server';
 import { jwtVerify, errors } from "jose";
-import { refresh } from "@/app/actions";
 
 export async function middleware(request: NextRequest) {
     //zjistí jestli se v cookies nachází jwt
@@ -57,6 +56,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico|register|login|.*\\..*|refresh|$).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|register|login|.*\\..*).*)',
     ],
 }
