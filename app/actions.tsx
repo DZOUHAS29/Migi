@@ -31,8 +31,8 @@ const signTokens = async (user: User): Promise<void> => {
     const token = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("20s").setIssuedAt().sign(secret);
     //const refresh = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(refreshSecret);
 
-    //uloží do db refresh token
-
+    //uloží do local storage refresh token
+    
     //nastavit secure cookie pro token
     cookies().set({
         name: "jwt",
@@ -40,7 +40,7 @@ const signTokens = async (user: User): Promise<void> => {
         httpOnly: true,
         sameSite: "strict",
         secure: true,
-        maxAge: 60 * 60,
+        maxAge: 25,
         path: "/"
     });
 
