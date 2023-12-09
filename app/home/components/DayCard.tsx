@@ -3,6 +3,7 @@ import moment from "moment";
 import { FiSunrise } from "@react-icons/all-files/fi/FiSunrise";
 import { FiSun } from "@react-icons/all-files/fi/FiSun";
 import { FiSunset } from "@react-icons/all-files/fi/FiSunset";
+import { useAddData } from "@/app/contexts/add-data";
 
 interface props {
     day: string;
@@ -14,13 +15,20 @@ const style = {
 }
 
 export const DayCard: React.FC<props> = ({ day }) => {
+    const { openAdd } = useAddData();
+
+    const handle = () => {
+        openAdd(day);
+    }
+
     return (
         <Card
             className={day === moment().format("YYYY-MM-DD") ? style.current : style.normal}
             variant={"filled"}
+            onClick={handle}
         >
             <CardHeader>
-                <Heading className="font-mono text-lg">
+                <Heading className="text-lg font-normal">
                     {moment(day).format("ddd")}
                 </Heading>
             </CardHeader>
@@ -38,7 +46,7 @@ export const DayCard: React.FC<props> = ({ day }) => {
                 </div>
             </CardBody>
             <CardFooter>
-                <Text className="font-bold">
+                <Text className="">
                     {moment(day).format("DD.M.")}
                 </Text>
             </CardFooter>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { register } from "@/app/actions"
 import { redirect } from "next/navigation";
+import { Input } from "@chakra-ui/react";
 
 interface Warning {
     message: string,
@@ -50,19 +51,35 @@ export default function Register() {
                         </div>
                         <div className="grid p-2">
                             <p className="">Username</p>
-                            <input type="text" name="username" className="rounded bg-blue-300 p-1" />
+                            <Input
+                                type="text"
+                                name="username"
+                                className="bg-white"
+                            />
                         </div>
                         <div className="grid p-2">
                             <p className="">Email</p>
-                            <input type="text" name="email" className="rounded bg-blue-300 p-1" />
+                            <Input
+                                type="text"
+                                name="email"
+                                className="bg-white"
+                            />
                         </div>
                         <div className="grid p-2">
                             <p className="">Password</p>
-                            <input type="password" name="password" className="rounded bg-blue-300 p-1" />
+                            <Input
+                                type="password"
+                                name="password"
+                                className="bg-white"
+                            />
                         </div>
                         <div className="grid p-2">
                             <p className="">Enter password again</p>
-                            <input type="password" name="repassword" className="rounded bg-blue-300 p-1" />
+                            <Input
+                                type="password"
+                                name="repassword"
+                                className="bg-white"
+                            />
                         </div>
                         <div className="grid">
                             {
@@ -73,7 +90,7 @@ export default function Register() {
                             }
                         </div>
                         <div className="grid justify-center  p-2">
-                            <button className="bg-blue-400 hover:bg-blue-500 p-2 rounded" formAction={submit}>Register</button>
+                            <button className="bg-blue-300 hover:bg-blue-400 p-2 rounded" formAction={submit}>Register</button>
                         </div>
                         <div className="grid justify-center p-2">
                             <Link href={"/"} className="text-sm underline ">Log in</Link>

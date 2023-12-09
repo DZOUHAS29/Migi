@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { login } from "@/app/actions"
 import { redirect } from "next/navigation";
+import { Input } from "@chakra-ui/react";
 
 
 interface FormData {
@@ -57,11 +58,19 @@ export default function Login() {
             </div>
             <div className="grid p-2">
               <p className="">Username or Email</p>
-              <input type="text" name="name" className="rounded bg-blue-300 p-1" />
+              <Input
+                type="text"
+                name="name"
+                className="bg-white"
+              />
             </div>
             <div className="grid p-2">
               <p className="">Password</p>
-              <input type="password" name="password" className="rounded bg-blue-300 p-1" />
+              <Input
+                type="password"
+                name="password"
+                className="bg-white"
+              />
             </div>
             <div className="grid">
               {
@@ -72,7 +81,7 @@ export default function Login() {
               }
             </div>
             <div className="grid justify-center p-2">
-              <button className="bg-blue-400 hover:bg-blue-500 p-2 rounded" formAction={submit}>Log in</button>
+              <button className="bg-blue-300 hover:bg-blue-400 p-2 rounded" formAction={submit}>Log in</button>
             </div>
             <div className="grid justify-center p-2">
               <Link href={"/register"} className="text-sm underline ">Register</Link>

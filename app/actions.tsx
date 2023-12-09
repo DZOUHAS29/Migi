@@ -177,3 +177,39 @@ export const refresh = async (): Promise<Output> => {
         return { message: "Refresh token failed", variant: "error" };
     }
 }
+
+export const addRecord = async (formData: FormData): Promise<Output> => {
+    const date = formData.get("date")?.toString();
+    const type = formData.get("type")?.toString();
+    const daytime = formData.get("daytime")?.toString();
+    const cause = formData.get("cause")?.toString();
+    const meds: boolean = formData.get("meds") === "true" ? true : false;
+    const user = cookies().get("user")?.value;
+
+    if (date === "" || type === "" || daytime === "" || cause === "" || meds === undefined)
+        return { message: "Some inputs are empty", variant: "error" }
+
+    if (!user || user === "")
+        return { message: "User is missing. Try refreshing page", variant: "error" }
+
+    const { id } = JSON.parse(user);
+
+    try {
+        const data = await prisma.records.create({
+            data: {
+                user_id: id,
+                date: new Date(date as string),
+                type: type as string,
+                cause: cause as string,
+                day_part: daytime as string,
+                meds: meds
+            }
+        });
+
+        /* socket */
+
+        return { message: "Records added", variant: "success" }
+    } catch (error) {
+        return { message: "Something went wrong", variant: "error" }
+    }
+}
