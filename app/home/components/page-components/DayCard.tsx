@@ -10,8 +10,8 @@ interface props {
 }
 
 const style = {
-    current: "bg-blue-400 border-none hover:bg-blue-500 hover:cursor-pointer",
-    normal: "bg-blue-300 hover:cursor-pointer hover:bg-blue-400"
+    current: "bg-blue-300 border-none rounded-none hover:cursor-pointer border-b border-b-slate-900 border-t-blue-200 border-l-blue-200 border-r-blue-200 rounded-none",
+    normal: "bg-blue-200 hover:cursor-pointer border-b border-b-slate-900 border-t-blue-200 border-l-blue-200 border-r-blue-200 rounded-none"
 }
 
 export const DayCard: React.FC<props> = ({ day }) => {
@@ -24,7 +24,7 @@ export const DayCard: React.FC<props> = ({ day }) => {
     return (
         <Card
             className={day === moment().format("YYYY-MM-DD") ? style.current : style.normal}
-            variant={"filled"}
+            variant={"outline"}
             onClick={handle}
         >
             <CardHeader>
@@ -33,17 +33,7 @@ export const DayCard: React.FC<props> = ({ day }) => {
                 </Heading>
             </CardHeader>
             <CardBody className="p-0 pl-5 pr-5">
-                <div className="flex justify-between">
-                    <div className="grid">
-                        <Icon as={FiSunrise} className="text-2xl" />
-                    </div>
-                    <div className="grid">
-                        <Icon as={FiSun} className="text-2xl" />
-                    </div>
-                    <div className="grid">
-                        <Icon as={FiSunset} className="text-2xl" />
-                    </div>
-                </div>
+                {/* Records */}
             </CardBody>
             <CardFooter>
                 <Text className="">
