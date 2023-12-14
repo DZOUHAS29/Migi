@@ -3,10 +3,12 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from "next/headers";
+import { RecordsProps } from './interfaces';
 
 interface Output {
     message: string;
-    variant: string;
+    variant?: string;
+    status?: number;
 }
 
 interface User {
@@ -55,7 +57,7 @@ const signTokens = async (user: User): Promise<void> => {
         httpOnly: true,
         sameSite: "strict",
         secure: true,
-        maxAge: 60 * 60,
+        maxAge: 60 * 60 * 2,
         path: "/"
     });
 }
@@ -195,6 +197,17 @@ export const addRecord = async (formData: FormData): Promise<Output> => {
     const { id } = JSON.parse(user);
 
     try {
+        const found = await prisma.records.findFirst({
+            where: {
+                user_id: id,
+                date: new Date(date as string),
+                day_part: daytime
+            }
+        });
+
+        if (found)
+            return { message: "Record already exists", variant: "error" };
+
         const data = await prisma.records.create({
             data: {
                 user_id: id,
@@ -211,5 +224,32 @@ export const addRecord = async (formData: FormData): Promise<Output> => {
         return { message: "Records added", variant: "success" }
     } catch (error) {
         return { message: "Something went wrong", variant: "error" }
+    }
+}
+
+export const getRecords = async (week: string[]): Promise<number | RecordsProps[]> => {
+    if (week.length <= 0)
+        return 500;
+
+    const user = cookies().get("user")?.value;
+
+    if (!user)
+        return 500;
+
+    const { id } = JSON.parse(user);
+
+    try {
+        const data = await prisma.records.findMany({
+            where: {
+                user_id: id,
+                date: {
+                    in: week.map(day => new Date(day))
+                }
+            },
+        });
+
+        return data;
+    } catch (error) {
+        return 500;
     }
 }
