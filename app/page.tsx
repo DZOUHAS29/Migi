@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Home({
   children,
 }: {
@@ -5,7 +7,7 @@ export default function Home({
 }) {
   return (
     <>
-      {children}
+      {redirect("/home")}
     </>
   )
 }

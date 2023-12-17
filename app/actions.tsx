@@ -4,11 +4,11 @@ import bcrypt from 'bcrypt';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from "next/headers";
 import { RecordsProps } from './interfaces';
+import { Server } from 'socket.io';
 
 interface Output {
     message: string;
-    variant?: string;
-    status?: number;
+    variant: string;
 }
 
 interface User {

@@ -5,13 +5,6 @@ import { login } from "@/app/actions"
 import { redirect } from "next/navigation";
 import { Input } from "@chakra-ui/react";
 
-
-interface FormData {
-  username: string,
-  email: string,
-  password: string
-}
-
 interface Warning {
   message: string,
   variant: string
