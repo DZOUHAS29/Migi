@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface RecordsProps {
     date: Date;
     type: string;
@@ -5,3 +7,15 @@ export interface RecordsProps {
     cause: string;
     meds: boolean;
 }
+
+export interface ProviderProps {
+    children: ReactNode;
+};
+
+export interface OpenModalProps {
+    open: boolean;
+    openAdd: (param: string | RecordsProps) => void;
+    closeAdd: () => void;
+    record?: RecordsProps;
+    date?: string;
+};

@@ -38,7 +38,7 @@
     "db/User.js",
     "db/db.js",
     "middleware.ts"
-  ],
+, "socket-server.js"  ],
   "exclude": [
     "node_modules"
   ]

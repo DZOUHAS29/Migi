@@ -1,7 +1,9 @@
-import { addRecord } from "@/app/actions";
+import { addRecord } from "@/app/record-actions";
 import { useAddData } from "@/app/contexts/add-data";
+import { useSocket } from "@/app/contexts/socket";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Select, RadioGroup, Stack, Radio } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { RecordsProps } from "@/app/interfaces";
 
 const types = [
     "Headache",
@@ -22,6 +24,7 @@ interface Message {
 export default function AddRecord() {
     const [warning, setWarning] = useState<Message>({ message: "", variant: "" });
     const { date, open, closeAdd } = useAddData();
+    const { socket } = useSocket();
 
     useEffect(() => {
         if (!open)
@@ -40,6 +43,8 @@ export default function AddRecord() {
                 message: data.message,
                 variant: data.variant
             });
+
+        socket?.emit("add", { record: data.record as RecordsProps });
 
         setWarning({
             message: data.message,
@@ -63,7 +68,7 @@ export default function AddRecord() {
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col bg-blue-200 rounded p-2">
                             <div className="grid p-1">
                                 <span>
                                     When the problem started?
@@ -72,15 +77,16 @@ export default function AddRecord() {
                                     type="date"
                                     defaultValue={date}
                                     name="date"
+                                    className="bg-white"
                                 />
                             </div>
                             <div className="grid p-1">
                                 <span>
                                     What part of the day?
                                 </span>
-                                <Select name="daytime" placeholder="Select option">
+                                <Select name="daytime" placeholder="Select option" className="bg-white">
                                     {
-                                        parts.map(type => <option value={type}>{type}</option>)
+                                        parts.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
                                 </Select>
                             </div>
@@ -88,9 +94,9 @@ export default function AddRecord() {
                                 <span>
                                     Type?
                                 </span>
-                                <Select name="type" placeholder="Select option">
+                                <Select name="type" placeholder="Select option" className="bg-white">
                                     {
-                                        types.map(type => <option value={type}>{type}</option>)
+                                        types.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
                                 </Select>
                             </div>
@@ -101,6 +107,7 @@ export default function AddRecord() {
                                 <Input
                                     type="text"
                                     name="cause"
+                                    className="bg-white"
                                 />
                             </div>
                             <div className="grid p-1">
@@ -109,8 +116,8 @@ export default function AddRecord() {
                                 </span>
                                 <RadioGroup name="meds">
                                     <Stack direction={"row"}>
-                                        <Radio value="true">Yes</Radio>
-                                        <Radio value="false">No</Radio>
+                                        <Radio className="bg-white" value="true">Yes</Radio>
+                                        <Radio className="bg-white" value="false">No</Radio>
                                     </Stack>
                                 </RadioGroup>
                             </div>
@@ -127,8 +134,6 @@ export default function AddRecord() {
                     <ModalFooter>
                         <Button
                             onClick={closeAdd}
-                            variant={"link"}
-                            className="text-slate-400 hover:text-slate-600 hover:no-underline pr-5"
                         >
                             Close
                         </Button>

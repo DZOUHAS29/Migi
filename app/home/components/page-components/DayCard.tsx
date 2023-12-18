@@ -25,10 +25,9 @@ export const DayCard: React.FC<props> = ({ day, records }: props) => {
         <Card
             className={day === moment().format("YYYY-MM-DD") ? style.current : style.normal}
             variant={"outline"}
-            onClick={handle}
         >
             <div className="grid grid-cols-7">
-                <div className="col-span-1 text-lg">
+                <div className="col-span-1 text-lg" onClick={handle}>
                     <div className="flex flex-col p-6">
                         <div className="grid pb-1">
                             {moment(day).format("ddd")}

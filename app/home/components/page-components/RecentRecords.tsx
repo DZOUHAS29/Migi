@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client"
 import { cookies } from "next/headers";
 import { RecentCard } from "../recent-records-comps/RecentCard";
+import prisma from "@/prisma-client";
 
 interface RecordsProps {
     id: number;
@@ -16,7 +16,6 @@ export const RecentRecords = async () => {
 
     const getRecords = async (): Promise<RecordsProps[] | null> => {
         "use server"
-        const prisma: PrismaClient = new PrismaClient();
 
         const user = cookies().get("user")?.value;
 

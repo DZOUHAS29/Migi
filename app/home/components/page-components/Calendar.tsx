@@ -5,18 +5,23 @@ import { useCharts } from "../../../contexts/charts";
 import { DayCard } from "./DayCard";
 import { AddDataContextProvider } from "../../../contexts/add-data";
 import AddRecord from "./AddRecords";
-import { Divider, Input } from "@chakra-ui/react";
+import { Input } from "@chakra-ui/react";
 import { FiSunrise } from "@react-icons/all-files/fi/FiSunrise";
 import { FiSun } from "@react-icons/all-files/fi/FiSun";
 import { FiSunset } from "@react-icons/all-files/fi/FiSunset";
-import { getRecords } from "@/app/actions";
+import { getRecords } from "@/app/record-actions";
 import { RecordsProps } from "@/app/interfaces";
+import { useSocket } from "@/app/contexts/socket";
+import { useRouter } from "next/navigation";
+import RecordInfo from "../day-card-comps/RecordInfo";
 
 export const Calendar = () => {
     const [date, setDate] = useState<string>(moment().format("YYYY-MM-DD"));
     const [dates, setDates] = useState<string[]>([]);
     const [records, setRecords] = useState<RecordsProps[]>([]);
     const { setData } = useCharts();
+    const { socket } = useSocket();
+    const router = useRouter();
 
     const getDates = (): void => {
         let start = moment(date).startOf("week");
@@ -68,6 +73,15 @@ export const Calendar = () => {
         });
     }, [dates]);
 
+    useEffect(() => {
+        socket?.on("addedRecord", (record: RecordsProps) => {
+            const { date, day_part, type, cause, meds } = record;
+
+            setRecords(records => [...records, { date: date, day_part, type, cause, meds }]);
+            router.refresh();
+        });
+    }, [socket]);
+
     return (
         <AddDataContextProvider>
             <div className="flex flex-col">
@@ -116,6 +130,7 @@ export const Calendar = () => {
                 </div>
             </div>
             <AddRecord />
+            <RecordInfo />
         </AddDataContextProvider >
     )
 }

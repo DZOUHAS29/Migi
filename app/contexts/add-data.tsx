@@ -1,14 +1,11 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
+import { ProviderProps } from "../interfaces";
 
 interface AddDataProps {
     date: string;
     open: boolean;
     openAdd: (date: string) => void;
     closeAdd: () => void;
-};
-
-interface ProviderProps {
-    children: ReactNode;
 };
 
 const AddDataContext = createContext<AddDataProps>({
