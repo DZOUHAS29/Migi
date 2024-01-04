@@ -15,18 +15,18 @@ export default function RecordInfo() {
             isCentered
         >
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent className="bg-air-blue">
                 <ModalHeader>
                     Record
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <div className="flex flex-col bg-red-400 rounded p-2">
+                    <div className="flex flex-col bg-tea-green text-ucla-blue rounded shadow-md p-2">
                         <div className="font-medium text-xl p-2">
                             {record?.date ? moment(record.date).format("MM/DD/YYYY") : null}
                         </div>
                         <div className="p-1">
-                            <Divider className="border-red-700" />
+                            <Divider className="border-ucla-blue" />
                         </div>
                         <div className="p-1">
                             <p className="font-medium">
@@ -66,6 +66,7 @@ export default function RecordInfo() {
                 <ModalFooter>
                     <Button
                         onClick={() => { closeAdd() }}
+                        className="text-white hover:bg-air-blue hover:text-slate-500"
                     >
                         Close
                     </Button>

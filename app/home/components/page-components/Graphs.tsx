@@ -1,12 +1,12 @@
 "use client"
 import 'chart.js/auto';
 import { Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
-import { PolarArea } from "react-chartjs-2";
+import { Doughnut, Pie, PolarArea } from "react-chartjs-2";
 
 const Graphs = () => {
     return (
-        <div className='flex flex-col'>
-            <div className='grid'>
+        <div className='flex flex-col gap-y-2'>
+            <div className='p-2'>
                 <StatGroup>
                     <Stat>
                         <StatLabel>
@@ -34,23 +34,41 @@ const Graphs = () => {
                     </Stat>
                 </StatGroup>
             </div>
-            <div className='grid'>
-                <PolarArea data={{
-                    labels: [
-                        'Morning',
-                        'Afternoon',
-                        'Evening',
-                    ],
-                    datasets: [{
-                        label: 'My First Dataset',
-                        data: [11, 16, 7],
-                        backgroundColor: [
-                            'rgb(249, 249, 249)',
-                            'rgb(255, 228, 94)',
-                            'rgb(255, 99, 146)',
-                        ]
-                    }]
-                }} />
+            <div className="grid grid-cols-8 h-96">
+                <div className='col-span-1'>
+
+                </div>
+                <div className='col-span-6'>
+                    <Doughnut data={{
+                        labels: [
+                            'Morning',
+                            'Afternoon',
+                            'Evening',
+                        ],
+                        datasets: [{
+                            label: 'My First Dataset',
+                            data: [11, 16, 7],
+                            backgroundColor: [
+                                '#8DB9B8',
+                                '#B3D89C',
+                                '#D0EFB1'
+                            ],
+                            borderColor: [
+                                '#8DB9B8',
+                                '#B3D89C',
+                                '#D0EFB1'
+                            ],
+                        }]
+                    }}
+
+                        options={{
+                            color: "white",
+                        }}
+                    />
+                </div>
+                <div className='col-span-1'>
+
+                </div>
             </div>
         </div>
     )

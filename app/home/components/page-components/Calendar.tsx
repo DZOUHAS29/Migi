@@ -86,7 +86,7 @@ export const Calendar = () => {
         <AddDataContextProvider>
             <div className="flex flex-col">
                 <div className="grid">
-                    <div className="flex pl-9">
+                    <div className="flex">
                         <div className="grid self-center rounded">
                             <p className="text-2xl text-center p-1 font-medium">
                                 Week overview
@@ -103,7 +103,7 @@ export const Calendar = () => {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-7 pt-2 pl-9 justify-items-center">
+                <div className="grid grid-cols-7 pt-2 justify-items-center">
                     <div className="col-span-1">
 
                     </div>
@@ -121,7 +121,7 @@ export const Calendar = () => {
                     <div className="flex flex-col">
                         {
                             dates?.map((day, i) =>
-                                <div className="grid pl-9" key={i}>
+                                <div className="grid" key={i}>
                                     <DayCard day={day} records={records.filter(record => moment(record.date).format("YYYY-MM-DD") === day)} />
                                 </div>
                             )

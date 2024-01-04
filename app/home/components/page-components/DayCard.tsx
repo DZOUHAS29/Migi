@@ -1,4 +1,4 @@
-import { Card } from "@chakra-ui/react";
+import { Card, Divider } from "@chakra-ui/react";
 import moment from "moment";
 import { useAddData } from "@/app/contexts/add-data";
 import { RecordsProps } from "@/app/interfaces";
@@ -10,8 +10,8 @@ interface props {
 }
 
 const style = {
-    current: "bg-blue-300 hover:cursor-pointer border-b border-b-slate-900 border-t-blue-200 border-l-blue-200 border-r-blue-200 rounded-none",
-    normal: "bg-blue-200 hover:cursor-pointer border-b border-b-slate-900 border-t-blue-200 border-l-blue-200 border-r-blue-200 rounded-none"
+    current: "bg-air-blue",
+    normal: "bg-ucla-blue"
 }
 
 export const DayCard: React.FC<props> = ({ day, records }: props) => {
@@ -23,7 +23,9 @@ export const DayCard: React.FC<props> = ({ day, records }: props) => {
 
     return (
         <Card
-            className={day === moment().format("YYYY-MM-DD") ? style.current : style.normal}
+            className={`${day === moment().format("YYYY-MM-DD") ? style.current : style.normal} 
+              hover:cursor-pointer border-b-0 rounded-none text-white border-l-0 border-t-0 border-r-0
+            `}
             variant={"outline"}
         >
             <div className="grid grid-cols-7">
@@ -75,6 +77,7 @@ export const DayCard: React.FC<props> = ({ day, records }: props) => {
                     })()}
                 </div>
             </div>
+            <Divider />
         </Card>
     )
 }

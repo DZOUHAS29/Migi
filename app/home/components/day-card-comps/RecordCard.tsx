@@ -9,7 +9,7 @@ const RecordCard = (data: RecordsProps) => {
 
     return (
         <ScaleFade in={true} initialScale={0.9}>
-            <div className="grid grid-cols-2 justify-items-center p-2 rounded bg-red-400  hover:bg-red-500 hover:bg-opacity-80"
+            <div className="grid grid-cols-2 justify-items-center p-2 rounded bg-tea-green text-ucla-blue  hover:bg-celadon hover:bg-opacity-80"
                 onClick={() => { openAdd(data) }}
             >
                 <div className="col-span-2 font-medium">

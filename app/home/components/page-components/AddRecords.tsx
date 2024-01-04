@@ -61,14 +61,14 @@ export default function AddRecord() {
             isCentered
         >
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent className="bg-air-blue">
                 <form>
                     <ModalHeader className="font-normal">
                         <span className="font-semibold">Add Record</span>
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <div className="flex flex-col bg-blue-200 rounded p-2">
+                        <div className="flex flex-col bg-tea-green text-ucla-blue rounded shadow-md p-2">
                             <div className="grid p-1">
                                 <span>
                                     When the problem started?
@@ -77,14 +77,14 @@ export default function AddRecord() {
                                     type="date"
                                     defaultValue={date}
                                     name="date"
-                                    className="bg-white"
+                                    className="bg-white text-black border-ucla-blue"
                                 />
                             </div>
                             <div className="grid p-1">
                                 <span>
                                     What part of the day?
                                 </span>
-                                <Select name="daytime" placeholder="Select option" className="bg-white">
+                                <Select name="daytime" placeholder="Select option" iconColor="black" className="bg-white text-black border-ucla-blue">
                                     {
                                         parts.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
@@ -94,7 +94,7 @@ export default function AddRecord() {
                                 <span>
                                     Type?
                                 </span>
-                                <Select name="type" placeholder="Select option" className="bg-white">
+                                <Select name="type" placeholder="Select option" iconColor="black" className="bg-white text-black border-ucla-blue">
                                     {
                                         types.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
@@ -107,19 +107,17 @@ export default function AddRecord() {
                                 <Input
                                     type="text"
                                     name="cause"
-                                    className="bg-white"
+                                    className="bg-white text-black border-ucla-blue"
                                 />
                             </div>
                             <div className="grid p-1">
                                 <span>
                                     Did you take any medicine?
                                 </span>
-                                <RadioGroup name="meds">
-                                    <Stack direction={"row"}>
-                                        <Radio className="bg-white" value="true">Yes</Radio>
-                                        <Radio className="bg-white" value="false">No</Radio>
-                                    </Stack>
-                                </RadioGroup>
+                                <Select name="meds" placeholder="Select option" iconColor="black" className="bg-white text-black border-ucla-blue">
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </Select>
                             </div>
                             {
                                 warning.message === "" ?
@@ -134,13 +132,14 @@ export default function AddRecord() {
                     <ModalFooter>
                         <Button
                             onClick={closeAdd}
+                            className="text-white hover:bg-air-blue hover:text-slate-500"
                         >
                             Close
                         </Button>
                         <Button
                             type="submit"
                             formAction={handle}
-                            className="bg-blue-300 hover:bg-blue-400"
+                            className="bg-light-blue hover:bg-light-dark-blue text-white"
                         >
                             Save
                         </Button>

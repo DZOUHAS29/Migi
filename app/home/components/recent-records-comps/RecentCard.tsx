@@ -41,12 +41,12 @@ export const RecentCard = ({ date, dayPart, cause, meds, type }: props) => {
                         <div className="col-span-4 text-xl self-center justify-self-center">
                             {dayIcon()}
                         </div>
-                        <div className="col-span-1 text-xl self-center justify-self-end text-red-400">
+                        <div className="col-span-1 text-xl self-center justify-self-end text-white">
                             {meds ? <CgPill /> : null}
                         </div>
                     </div>
                     <div className="pt-3">
-                        <Divider className="border-slate-900" />
+                        <Divider className="border-white" />
                     </div>
                 </div>
             </Tooltip>

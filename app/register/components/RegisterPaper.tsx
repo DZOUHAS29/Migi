@@ -1,21 +1,21 @@
 "use client"
-import React from 'react';
-import { Input } from "@chakra-ui/react";
+import React from 'react'
 import Link from "next/link";
 import { useState } from "react";
-import { login } from "@/app/actions"
+import { register } from "@/app/actions"
 import { redirect } from "next/navigation";
+import { Input } from "@chakra-ui/react";
 
 interface Warning {
     message: string,
     variant: string
 }
 
-export default function LoginPaper() {
+export default function RegisterPaper() {
     const [warning, setWarning] = useState<Warning>({ message: "", variant: "" });
 
     const submit = async (formData: globalThis.FormData) => {
-        const data = await login(formData);
+        const data = await register(formData);
 
         setWarning(data);
 
@@ -27,13 +27,21 @@ export default function LoginPaper() {
         <form>
             <div className="flex flex-col p-5 bg-air-blue rounded shadow-md">
                 <div className="grid p-2 text-center text-xl">
-                    <span>Welcome Back!</span>
+                    <span>Register now to gain access!</span>
                 </div>
                 <div className="grid p-2">
-                    <p className="">Username or Email</p>
+                    <p className="">Username</p>
                     <Input
                         type="text"
-                        name="name"
+                        name="username"
+                        className="bg-white text-black"
+                    />
+                </div>
+                <div className="grid p-2">
+                    <p className="">Email</p>
+                    <Input
+                        type="text"
+                        name="email"
                         className="bg-white text-black"
                     />
                 </div>
@@ -45,6 +53,14 @@ export default function LoginPaper() {
                         className="bg-white text-black"
                     />
                 </div>
+                <div className="grid p-2">
+                    <p className="">Enter password again</p>
+                    <Input
+                        type="password"
+                        name="repassword"
+                        className="bg-white text-black"
+                    />
+                </div>
                 <div className="grid">
                     {
                         warning.variant === "" ?
@@ -53,11 +69,11 @@ export default function LoginPaper() {
                             <span className={`${warning.variant === "error" ? "text-red-700" : "text-green-600"} p-2 text-center`}>{warning.message}</span>
                     }
                 </div>
-                <div className="grid justify-center p-2">
-                    <button className="bg-light-blue shadow-sm text-white hover:bg-light-dark-blue p-2 rounded" formAction={submit}>Log in</button>
+                <div className="grid justify-center  p-2">
+                    <button className="bg-light-blue shadow-sm text-white hover:bg-light-dark-blue p-2 rounded" formAction={submit}>Register</button>
                 </div>
                 <div className="grid justify-center p-2">
-                    <Link href={"/register"} className="text-sm underline ">Register</Link>
+                    <Link href={"/"} className="text-sm underline ">Log in</Link>
                 </div>
             </div>
         </form>
