@@ -34,7 +34,7 @@ const Graphs = () => {
                     </Stat>
                 </StatGroup>
             </div>
-            <div className="grid grid-cols-8 h-96 lg:pl-8">
+            <div className="grid grid-cols-8 h-96 lg:pl-9">
                 <div className='col-span-1'>
 
                 </div>

@@ -1,3 +1,4 @@
+import { Divider } from "@chakra-ui/react";
 import { Calendar } from "./components/page-components/Calendar";
 import Graphs from "./components/page-components/Graphs";
 import { RecentRecords } from "./components/page-components/RecentRecords";
@@ -10,7 +11,7 @@ export default function Page() {
                 <Calendar />
             </div>
             <div className="col-span-1">
-
+                
             </div>
             <div className="lg:col-span-4 md:col-span-12 sm:col-span-12 xs-full md:p-5 sm:p-3 xs-padding">
                 <div className="flex flex-col gap-y-5">
