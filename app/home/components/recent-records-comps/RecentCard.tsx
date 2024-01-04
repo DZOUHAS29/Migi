@@ -28,12 +28,15 @@ export const RecentCard = ({ date, dayPart, cause, meds, type }: props) => {
     }
 
     return (
-        <div>
+        <div className="p-2">
             <Tooltip label={cause} hasArrow bg={"rgba(0, 0, 0, 0.9)"} className="rounded">
                 <div className="flex flex-col">
+                    <div>
+                        <Divider className="border-white" />
+                    </div>
                     <div className="grid grid-cols-12 pt-3">
                         <div className="col-span-2">
-                            {moment(date).format("MM/DD")}
+                            {moment(date).format("MM/DD/YYYY")}
                         </div>
                         <div className="col-span-4 text-center">
                             {type}
@@ -44,9 +47,6 @@ export const RecentCard = ({ date, dayPart, cause, meds, type }: props) => {
                         <div className="col-span-1 text-xl self-center justify-self-end text-white">
                             {meds ? <CgPill /> : null}
                         </div>
-                    </div>
-                    <div className="pt-3">
-                        <Divider className="border-white" />
                     </div>
                 </div>
             </Tooltip>

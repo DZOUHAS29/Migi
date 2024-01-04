@@ -97,7 +97,7 @@ export const Calendar = () => {
                                 type="date"
                                 variant={"unstyled"}
                                 value={date}
-                                className="hover:cursor-pointer hover:bg-blue-300"
+                                className="hover:cursor-pointer hover:bg-air-blue calendar"
                                 onChange={event => { setDate(event.target.value) }}
                             />
                         </div>

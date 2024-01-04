@@ -2,26 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+.calendar {
+    color-scheme: dark;
+}
+
 @media (max-width: 480px) {
     .xs-column {
         grid-column: span 3 / span 3;
     }
+
+    .xs-full {
+        grid-column: span 12;
+    }
+
     .center-text {
         text-align: center;
     }
+
+    .xs-padding {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
 }
+
+@media (max-width: 639px) {
+    .xs-full {
+        grid-column: span 12;
+    }
+
+    .xs-padding {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
 @media (max-width: 768px) {
     .xs-column {
         grid-column: span 3 / span 3;
     }
+
     .center-text {
         text-align: center;
     }
 }
+
 @media (max-width: 1024px) {
     .xs-column {
         grid-column: span 3 / span 3;
     }
+
     .center-text {
         text-align: center;
     }

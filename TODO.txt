@@ -1,3 +1,9 @@
 middleware 
     refresh token function -> send refresh thru cookie?
 
+Menu
+    předělat do chakra ui
+
+Stats page 
+    vytvořit stránku
+    vytvořit funkční staty a výpočty

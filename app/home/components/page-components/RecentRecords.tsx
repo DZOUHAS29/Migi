@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { RecentCard } from "../recent-records-comps/RecentCard";
 import prisma from "@/prisma-client";
+import { Divider } from "@chakra-ui/react";
 
 interface RecordsProps {
     id: number;
@@ -44,12 +45,15 @@ export const RecentRecords = async () => {
     const records = await getRecords();
 
     return (
-        <div className="flex flex-col">
-            <div>
+        <div className="flex flex-col bg-air-blue p-2 rounded shadow-md text-white">
+            <div className="pl-2">
                 <span className="font-medium">
                     Recent records
                 </span>
             </div>
+            {/* <div>
+                <Divider className="border-ucla-blue" />
+            </div> */}
             {
                 records?.map(({ date, cause, day_part, meds, type }, i) => <RecentCard key={i} date={date} cause={cause} dayPart={day_part} meds={meds} type={type} />)
             }

@@ -5,7 +5,7 @@ import { Doughnut, Pie, PolarArea } from "react-chartjs-2";
 
 const Graphs = () => {
     return (
-        <div className='flex flex-col gap-y-2'>
+        <div className='flex flex-col'>
             <div className='p-2'>
                 <StatGroup>
                     <Stat>
@@ -34,7 +34,7 @@ const Graphs = () => {
                     </Stat>
                 </StatGroup>
             </div>
-            <div className="grid grid-cols-8 h-96">
+            <div className="grid grid-cols-8 h-96 lg:pl-8">
                 <div className='col-span-1'>
 
                 </div>
@@ -64,6 +64,7 @@ const Graphs = () => {
                         options={{
                             color: "white",
                         }}
+
                     />
                 </div>
                 <div className='col-span-1'>
