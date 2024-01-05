@@ -2,11 +2,17 @@
 import { cookies } from 'next/headers';
 import { RecordsProps } from './interfaces';
 import prisma from '@/prisma-client';
+import moment from 'moment';
 
 interface Output {
     message: string;
     variant: string;
     record?: RecordsProps
+}
+
+interface PrevProps {
+    freq: number;
+    migraines: number;
 }
 
 export const addRecord = async (formData: FormData): Promise<Output> => {
@@ -76,6 +82,54 @@ export const getRecords = async (week: string[]): Promise<number | RecordsProps[
         });
 
         return data;
+    } catch (error) {
+        return 500;
+    }
+}
+
+const getDates = (date: string): string[] => {
+    let start = moment(date).startOf("week").subtract(1, "d").startOf("week");
+    let days: string[] = [];
+
+    for (let i = 0; i < 7; i++) {
+        days.push(start.format("YYYY-MM-DD"));
+        start.add(1, "days");
+    }
+
+    return days;
+};
+
+export const getPrev = async (date: string): Promise<PrevProps | number> => {
+    const user = cookies().get("user")?.value;
+
+    if (!date || date === "" || !user)
+        return 400;
+
+    const { id } = JSON.parse(user);
+
+    try {
+        const week = getDates(date);
+
+        const count = await prisma.records.count({
+            where: {
+                user_id: id,
+                date: {
+                    in: week.map(day => new Date(day))
+                },
+            }
+        })
+
+        const migraineCount = await prisma.records.count({
+            where: {
+                user_id: id,
+                date: {
+                    in: week.map(day => new Date(day))
+                },
+                type: "Migraine"
+            }
+        })
+
+        return { freq: count, migraines: migraineCount };
     } catch (error) {
         return 500;
     }

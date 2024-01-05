@@ -11,9 +11,8 @@ type ChartData = {
     datasets: {
         label: string;
         data: number[];
-        tension?: number,
-        backgroundColor?: string,
-        borderColor?: string
+        backgroundColor?: string[],
+        borderColor?: string[]
     }[];
     options?: object
 };
@@ -23,16 +22,15 @@ const ChartsContext = createContext<ChartsContextType>({
     setData: () => { }
 });
 
-export const ChartsContextProvider = ({ children }: ProviderProps)  => {
+export const ChartsContextProvider = ({ children }: ProviderProps) => {
     const [data, setData] = useState<ChartData>({
         labels: [""],
         datasets: [
             {
                 label: "",
                 data: [],
-                tension: 0.2,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 0.6)'
+                backgroundColor: [],
+                borderColor: []
             }
         ],
     });

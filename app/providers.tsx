@@ -4,6 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { ChartsContextProvider } from './contexts/charts';
 import { SocketContextProvider } from './contexts/socket';
 import { RecordInfoContextProvider } from './contexts/record-info';
+import { RecordsContextProvider } from './contexts/records';
 
 export function Providers({
   children
@@ -16,9 +17,11 @@ export function Providers({
       <ChakraProvider>
         <SocketContextProvider>
           <ChartsContextProvider>
-            <RecordInfoContextProvider>
-              {children}
-            </RecordInfoContextProvider>
+            <RecordsContextProvider>
+              <RecordInfoContextProvider>
+                {children}
+              </RecordInfoContextProvider>
+            </RecordsContextProvider>
           </ChartsContextProvider>
         </SocketContextProvider>
       </ChakraProvider>

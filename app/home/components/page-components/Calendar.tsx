@@ -14,14 +14,14 @@ import { RecordsProps } from "@/app/interfaces";
 import { useSocket } from "@/app/contexts/socket";
 import { useRouter } from "next/navigation";
 import RecordInfo from "../day-card-comps/RecordInfo";
+import { useRecords } from "@/app/contexts/records";
 
 export const Calendar = () => {
     const [date, setDate] = useState<string>(moment().format("YYYY-MM-DD"));
     const [dates, setDates] = useState<string[]>([]);
-    const [records, setRecords] = useState<RecordsProps[]>([]);
-    const { setData } = useCharts();
     const { socket } = useSocket();
     const router = useRouter();
+    const { setRecords, records } = useRecords();
 
     const getDates = (): void => {
         let start = moment(date).startOf("week");
@@ -45,6 +45,7 @@ export const Calendar = () => {
             return;
 
         setRecords(data as RecordsProps[]);
+
     };
 
     useEffect(() => {
@@ -54,24 +55,6 @@ export const Calendar = () => {
     useEffect(() => {
         getData();
     }, [dates])
-
-    useEffect(() => {
-        if (dates.length <= 0)
-            return;
-
-        setData({
-            labels: dates.map(day => moment(day).format("DD.MM.")),
-            datasets: [
-                {
-                    label: "Migraines",
-                    data: dates.map(day => Math.random() * 6),
-                    tension: 0.2,
-                    backgroundColor: 'rgb(96 165 250)',
-                    borderColor: 'rgb(96 165 250)'
-                }
-            ]
-        });
-    }, [dates]);
 
     useEffect(() => {
         socket?.on("addedRecord", (record: RecordsProps) => {
