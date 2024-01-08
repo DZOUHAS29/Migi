@@ -1,9 +1,11 @@
-import { IoClose } from "@react-icons/all-files/io5/IoClose";
 import { BiHomeSmile } from "@react-icons/all-files/bi/BiHomeSmile";
 import { BiUser } from "@react-icons/all-files/bi/BiUser";
 import { IoStatsChart } from "@react-icons/all-files/io5/IoStatsChart";
 import { IoIosSettings } from "@react-icons/all-files/io/IoIosSettings";
 import { BiLogOut } from "@react-icons/all-files/bi/BiLogOut";
+import { Button, Divider, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay } from "@chakra-ui/react";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type props = {
     open: boolean;
@@ -11,95 +13,81 @@ type props = {
 }
 
 export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
+    const router = useRouter();
 
-    const transition = open ? "translate-x-0" : "translate-x-full";
+    const handleClose = () => {
+        setOpen(false);
+    }
+    const handleRedirect = (path: string) => {
+        router.push(`/${path}`);
+        setOpen(false);
+    };
 
     return (
-        <div
-            className={`w-1/4 h-full bg-blue-400 bg-opacity-95 ${transition} fixed 
-            rounded right-0 top-0 bottom-0 transition ease-linear z-10`}
+        <Drawer
+            isOpen={open}
+            onClose={handleClose}
+            placement="right"
+            size={"sm"}
         >
-            <div className="flex-row">
-                <div className="grid justify-end p-4 hover:text-blue-500">
-                    <button className="text-3xl"
-                        onClick={() => { setOpen(false) }}
-                    >
-                        <IoClose />
-                    </button>
-                </div>
-                <div className="grid p-10 hover:text-blue-500">
-                    <button>
-                        <div className="flex">
-                            <div className="grid self-center text-4xl">
-                                <BiHomeSmile />
-                            </div>
-                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
-                                <h5>
-                                    Home
-                                </h5>
-                            </div>
+            <DrawerOverlay />
+            <DrawerContent className="bg-air-blue rounded">
+                <DrawerCloseButton />
+                <DrawerHeader >
+                    Menu
+                </DrawerHeader>
+                <DrawerBody >
+                    <div className="flex flex-col gap-y-7">
+                        <div>
+                            <Divider />
                         </div>
-                    </button>
-                </div>
-                <div className="grid p-10 hover:text-blue-500">
-                    <button>
-                        <div className="flex">
-                            <div className="grid self-center text-4xl">
-                                <IoStatsChart />
-                            </div>
-                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
-                                <h5>
-                                    Statistics
-                                </h5>
-                            </div>
+                        <div>
+                            <Button
+                                leftIcon={<BiHomeSmile />}
+                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                onClick={() => { handleRedirect("home") }}
+                            >
+                                Home
+                            </Button>
                         </div>
-                    </button>
-                </div>
-                <div className="grid p-10 hover:text-blue-500">
-                    <button>
-                        <div className="flex">
-                            <div className="grid self-center text-4xl">
-                                <BiUser />
-                            </div>
-                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
-                                <h5>
-                                    Profile
-                                </h5>
-                            </div>
+                        <div>
+                            <Button
+                                leftIcon={<BiUser />}
+                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                onClick={() => { handleRedirect("home") }}
+                            >
+                                Profile
+                            </Button>
                         </div>
-                    </button>
-                </div>
-                <div className="grid p-10 hover:text-blue-500">
-                    <button>
-                        <div className="flex">
-                            <div className="grid self-center text-4xl">
-                                <IoIosSettings />
-                            </div>
-                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
-                                <h5>
-                                    Settings
-                                </h5>
-                            </div>
+                        <div>
+                            <Button
+                                leftIcon={<IoStatsChart />}
+                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                onClick={() => { handleRedirect("stats") }}
+                            >
+                                Statistics
+                            </Button>
                         </div>
-                    </button>
-                </div>
-                <div className="grid p-10 text-red-500 hover:text-red-600">
-                    <button>
-                        <div className="flex">
-                            <div className="grid self-center text-4xl">
-                                <BiLogOut />
-                            </div>
-                            <div className="grid self-center font-mono pl-5 pt-1  text-2xl">
-                                <h5>
-                                    Log out
-                                </h5>
-                            </div>
+                        <div>
+                            <Button
+                                leftIcon={<IoIosSettings />}
+                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                onClick={() => { handleRedirect("home") }}
+                            >
+                                Settings
+                            </Button>
                         </div>
-                    </button>
-                </div>
-               
-
-            </div>
-        </div>
+                        <div>
+                            <Button
+                                leftIcon={<BiLogOut />}
+                                className="w-full h-16 text-white bg-red-500 text-2xl  hover:bg-red-600"
+                            >
+                                Log out
+                            </Button>
+                        </div>
+                    </div>
+                </DrawerBody>
+            </DrawerContent>
+        </Drawer>
     )
 }

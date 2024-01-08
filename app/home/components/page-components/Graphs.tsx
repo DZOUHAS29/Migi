@@ -1,12 +1,13 @@
 "use client"
 import 'chart.js/auto';
-import { Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
-import { Doughnut } from "react-chartjs-2";
+import { Button, Link, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
+import { Bar, Doughnut } from "react-chartjs-2";
 import { useRecords } from '@/app/contexts/records';
 import { useEffect, useState } from 'react';
 import { getPrev } from '@/app/record-actions';
 import moment from 'moment';
 import { useCharts } from '@/app/contexts/charts';
+import { useRouter } from 'next/navigation';
 
 interface PrevProps {
     freq: number;
@@ -16,6 +17,7 @@ interface PrevProps {
 const Graphs = () => {
     const [prev, setPrev] = useState<PrevProps>({ freq: 0, migraines: 0 });
     const { records } = useRecords();
+    const router = useRouter();
 
     const prevData = async (): Promise<void> => {
         if (records.length <= 0)
@@ -62,6 +64,22 @@ const Graphs = () => {
 
     return (
         <div className='flex flex-col'>
+            <div className='grid grid-cols-2'>
+                <div className='col-span-1'>
+                    <p className="text-2xl font-medium">
+                        Week statistics
+                    </p>
+                </div>
+                <div className='col-span-1 text-right'>
+                    <Button
+                        variant={'link'}
+                        textColor={"white"}
+                        onClick={() => { router.push("/stats") }}
+                    >
+                        More
+                    </Button>
+                </div>
+            </div>
             <div className='p-2'>
                 <StatGroup>
                     <Stat>
@@ -92,12 +110,10 @@ const Graphs = () => {
                     </Stat>
                 </StatGroup>
             </div>
-            <div className="grid grid-cols-8 h-96 lg:pl-9">
-                <div className='col-span-1'>
-
-                </div>
-                <div className='col-span-6'>
-                    <Doughnut data={{
+            <div >
+                
+                <div>
+                    <Bar data={{
                         labels: ["Morning", "Afternoon", "Evening"],
                         datasets: [
                             {
@@ -108,28 +124,56 @@ const Graphs = () => {
                                     records?.filter(({ day_part }) => day_part === "Evening").length
                                 ],
                                 backgroundColor: [
-                                    '#8DB9B8',
-                                    '#B3D89C',
-                                    '#D0EFB1'
+                                    'rgba(141, 185, 184, 0.8)',
+                                    'rgba(179, 216, 156, 0.8)',
+                                    'rgba(208, 239, 177, 0.8)'
                                 ],
                                 borderColor: [
                                     '#8DB9B8',
                                     '#B3D89C',
                                     '#D0EFB1'
                                 ],
-                            }
-                        ]
+                                
+                            },
+                        ],
                     }}
 
                         options={{
-                            color: "white",
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: "rgba(255, 255, 255, 0.6)",
+                                    },
+                                    ticks: {
+                                        color: "white",
+                                        callback: function(value) {
+                                            if (Number.isInteger(value)) {
+                                              return value; 
+                                            }
+                                        },
+                                    },
+                                },
+                                x: {
+                                    grid: {
+                                        color: "rgba(255, 255, 255, 0.6)",
+                                    },
+                                    ticks: {
+                                        color: "white",
+                                    }
+                                },
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: "white"
+                                    }
+                                }
+                            }
                         }}
-
                     />
                 </div>
-                <div className='col-span-1'>
-
-                </div>
+                
             </div>
         </div>
     )
