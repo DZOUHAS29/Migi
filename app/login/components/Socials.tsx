@@ -6,27 +6,27 @@ export default function Socials() {
             <div>
                 <div className="flex flex-col gap-y-5">
                     <div>
-                        <p className="p-2 pl-0 text-lg">Comprehensive Tracking</p>
+                        <p className="p-2 pl-0 text-lg mac-font-heading">Comprehensive Tracking</p>
                         <p>Our platform meticulously records migraine occurrences, durations, and intensity levels, offering users a detailed overview of their migraine patterns.</p>
                     </div>
                     <div>
                         <Divider className="border-ucla-blue" />
-                        <p className="p-2 pl-0 text-lg">Accurate Statistical Analysis</p>
+                        <p className="p-2 pl-0 text-lg mac-font-heading">Accurate Statistical Analysis</p>
                         <p>Utilizing the recorded data, our system generates precise statistical insights, empowering users with actionable information about their migraine triggers and patterns.</p>
                     </div>
                     <div>
                         <Divider className="border-ucla-blue" />
-                        <p className="p-2 pl-0 text-lg">Intuitive User Interface</p>
+                        <p className="p-2 pl-0 text-lg mac-font-heading">Intuitive User Interface</p>
                         <p>A thoughtfully designed interface ensures ease of use, allowing seamless navigation and effortless data entry for effective migraine tracking without unnecessary complexity.</p>
                     </div>
                     <div>
                         <Divider className="border-ucla-blue" />
-                        <p className="p-2 pl-0 text-lg">Effortless Data Export</p>
+                        <p className="p-2 pl-0 text-lg mac-font-heading">Effortless Data Export</p>
                         <p>Users can easily export their tracked statistics, facilitating sharing with healthcare professionals or for personal records, ensuring seamless data portability and compatibility.</p>
                     </div>
                     <div>
                         <Divider className="border-ucla-blue" />
-                        <p className="p-2 pl-0 text-lg">Comparison to Normal Levels</p>
+                        <p className="p-2 pl-0 text-lg mac-font-heading">Comparison to Normal Levels</p>
                         <p>Our platform evaluates the frequency of migraines against established norms, providing users with insights into whether their migraine patterns align with typical levels, potentially indicating the need for further medical attention or consultation.</p>
                     </div>
                 </div>
