@@ -1,14 +1,21 @@
-import React from 'react'
+"use client"
+import WeekStats from './components/weekStats'
 
-export default function Stats({
-    children,
-}: {
-    children: React.ReactNode
-}) 
-{
+export default function Stats() {
     return (
-        <div>
-            Stats
+        <div className='flex flex-col'>
+            <div>
+                <span>Weekly statistics</span>
+            </div>
+            <div>
+                <WeekStats />
+            </div>
+            <div>
+
+            </div>
+            <div>
+
+            </div>
         </div>
     )
 }

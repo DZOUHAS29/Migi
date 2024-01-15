@@ -1,9 +1,7 @@
 middleware 
     refresh token function -> send refresh thru cookie?
 
-Menu
-    předělat do chakra ui
-
 Stats page 
-    vytvořit stránku
-    vytvořit funkční staty a výpočty
+    Staty pro frekvenci za týdny + migrény + prášky
+    Staty pro měsíc za týdny + migrény + prášky
+    Staty za rok za týdny + migrény
