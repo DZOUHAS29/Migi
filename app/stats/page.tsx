@@ -1,5 +1,5 @@
 "use client"
-import WeekStats from './components/weekStats'
+import WeekStats from './components/WeekStats'
 
 export default function Stats() {
     return (

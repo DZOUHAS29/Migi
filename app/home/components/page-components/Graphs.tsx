@@ -70,7 +70,7 @@ const Graphs = () => {
                         Week statistics
                     </p>
                 </div>
-                <div className='col-span-1 text-right'>
+                <div className='col-span-1 text-right self-center'>
                     <Button
                         variant={'link'}
                         textColor={"white"}
