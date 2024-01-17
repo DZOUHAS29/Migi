@@ -19,3 +19,18 @@ export interface OpenModalProps {
     record?: RecordsProps;
     date?: string;
 };
+
+export interface StatsProps {
+    date: string;
+    overall: number;
+    migraines: number;
+    headaches: number;
+    meds: number;
+    part: {
+        [key: string]: number;
+        morning: number,
+        afternoon: number,
+        evening: number,
+    }
+
+}

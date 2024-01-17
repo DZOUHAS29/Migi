@@ -77,14 +77,14 @@ export default function AddRecord() {
                                     type="date"
                                     defaultValue={date}
                                     name="date"
-                                    className="bg-white text-black border-ucla-blue"
+                                    className="bg-white text-black"
                                 />
                             </div>
                             <div className="grid p-1">
                                 <span>
                                     What part of the day?
                                 </span>
-                                <Select name="daytime" placeholder="Select option" iconColor="black" className="bg-white text-black border-ucla-blue">
+                                <Select name="daytime" placeholder="Select option" iconColor="black" className="bg-white text-black">
                                     {
                                         parts.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
@@ -94,7 +94,7 @@ export default function AddRecord() {
                                 <span>
                                     Type?
                                 </span>
-                                <Select name="type" placeholder="Select option" iconColor="black" className="bg-white text-black border-ucla-blue">
+                                <Select name="type" placeholder="Select option" iconColor="black" className="bg-white text-black">
                                     {
                                         types.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
@@ -107,14 +107,14 @@ export default function AddRecord() {
                                 <Input
                                     type="text"
                                     name="cause"
-                                    className="bg-white text-black border-ucla-blue"
+                                    className="bg-white text-black "
                                 />
                             </div>
                             <div className="grid p-1">
                                 <span>
                                     Did you take any medicine?
                                 </span>
-                                <Select name="meds" placeholder="Select option" iconColor="black" className="bg-white text-black border-ucla-blue">
+                                <Select name="meds" placeholder="Select option" iconColor="black" className="bg-white text-black">
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
                                 </Select>
