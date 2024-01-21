@@ -20,6 +20,7 @@
     "@types/bcrypt": "^5.0.2",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
+    "bufferutil": "^4.0.8",
     "chart.js": "^4.4.0",
     "framer-motion": "^10.16.4",
     "jose": "^5.1.1",
@@ -30,7 +31,9 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "utf-8-validate": "^5.0.10",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.5",
