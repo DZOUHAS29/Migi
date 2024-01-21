@@ -63,6 +63,10 @@ export const Calendar = () => {
             setRecords(records => [...records, { date: date, day_part, type, cause, meds }]);
             router.refresh();
         });
+
+        return () => {
+            socket?.off("addedRecord");
+        }
     }, [socket]);
 
     return (
@@ -80,7 +84,7 @@ export const Calendar = () => {
                                 type="date"
                                 variant={"unstyled"}
                                 value={date}
-                                className="hover:cursor-pointer hover:bg-air-blue calendar"
+                                className="hover:cursor-pointer hover:bg-air-blue calendar p-1"
                                 onChange={event => { setDate(event.target.value) }}
                             />
                         </div>
@@ -100,7 +104,7 @@ export const Calendar = () => {
                         <FiSunset />
                     </div>
                 </div>
-                <div className="grid">
+                <div className="grid pt-1 pb-1">
                     <div className="flex flex-col">
                         {
                             dates?.map((day, i) =>

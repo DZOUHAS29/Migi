@@ -66,8 +66,13 @@ export const register = async (formData: FormData): Promise<Output> => {
 
     try {
         //kontrola inputů
-        if (username === "" || email === "" || password === "" || repassword === "")
+        if (username === "" || email === "" || password === "" || repassword === "" || !password)
             throw new Error("Some inputs are empty");
+
+        const passwordLength: string[] = password.toString().split("");
+
+        if (passwordLength.length < 8)
+            throw new Error("Password must have at least 8 characters");
 
         if (password !== repassword)
             throw new Error("Passwords don't match");
