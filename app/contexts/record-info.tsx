@@ -3,14 +3,14 @@ import { OpenModalProps, ProviderProps, RecordsProps } from "../interfaces";
 
 const RecordInfoContext = createContext<OpenModalProps>({
     open: false,
-    record: { date: new Date(), day_part: "", type: "", cause: "", meds: false },
+    record: { id: -1, date: new Date(), day_part: "", type: "", cause: "", meds: false },
     closeAdd: () => { },
     openAdd: () => { },
 });
 
 export const RecordInfoContextProvider = ({ children }: ProviderProps) => {
     const [open, setOpen] = useState<boolean>(false);
-    const [record, setRecord] = useState<RecordsProps>({ date: new Date(), day_part: "", type: "", cause: "", meds: false });
+    const [record, setRecord] = useState<RecordsProps>({ id: -1, date: new Date(), day_part: "", type: "", cause: "", meds: false });
 
     const openAdd = (param: RecordsProps | string): void => {
         setRecord(param as RecordsProps);
@@ -18,7 +18,7 @@ export const RecordInfoContextProvider = ({ children }: ProviderProps) => {
     }
 
     const closeAdd = (): void => {
-        setRecord({ date: new Date(), day_part: "", type: "", cause: "", meds: false });
+        setRecord({ id: -1, date: new Date(), day_part: "", type: "", cause: "", meds: false });
         setOpen(false);
     }
 

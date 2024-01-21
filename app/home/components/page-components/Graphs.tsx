@@ -50,14 +50,14 @@ const Graphs = () => {
             return (
                 <StatHelpText>
                     <StatArrow type="decrease" />
-                    {Math.abs(Math.ceil(procenta))}%
+                    {100 - procenta}%
                 </StatHelpText>
             )
 
         return (
             <StatHelpText>
                 <StatArrow type="increase" />
-                {Math.abs(Math.ceil(procenta))}%
+                {procenta}%
             </StatHelpText>
         )
     }
@@ -111,7 +111,7 @@ const Graphs = () => {
                 </StatGroup>
             </div>
             <div >
-                
+
                 <div>
                     <Bar data={{
                         labels: ["Morning", "Afternoon", "Evening"],
@@ -133,7 +133,7 @@ const Graphs = () => {
                                     '#B3D89C',
                                     '#D0EFB1'
                                 ],
-                                
+
                             },
                         ],
                     }}
@@ -147,9 +147,9 @@ const Graphs = () => {
                                     },
                                     ticks: {
                                         color: "white",
-                                        callback: function(value) {
+                                        callback: function (value) {
                                             if (Number.isInteger(value)) {
-                                              return value; 
+                                                return value;
                                             }
                                         },
                                     },
@@ -173,7 +173,7 @@ const Graphs = () => {
                         }}
                     />
                 </div>
-                
+
             </div>
         </div>
     )

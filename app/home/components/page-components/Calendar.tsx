@@ -58,14 +58,20 @@ export const Calendar = () => {
 
     useEffect(() => {
         socket?.on("addedRecord", (record: RecordsProps) => {
-            const { date, day_part, type, cause, meds } = record;
+            const { id, date, day_part, type, cause, meds } = record;
 
-            setRecords(records => [...records, { date: date, day_part, type, cause, meds }]);
+            setRecords(records => [...records, { id, date: date, day_part, type, cause, meds }]);
+            router.refresh();
+        });
+
+        socket?.on("removedRecord", (id: number) => {
+            setRecords(records => records.filter(record => record.id !== id));
             router.refresh();
         });
 
         return () => {
             socket?.off("addedRecord");
+            socket?.off("removedRecord");
         }
     }, [socket]);
 

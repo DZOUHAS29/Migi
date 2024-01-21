@@ -134,3 +134,20 @@ export const getPrev = async (date: string): Promise<PrevProps | number> => {
         return 500;
     }
 }
+
+export const RemoveRecord = async (id: number): Promise<number> => {
+    if (!id)
+        return 400;
+    try {
+        await prisma.records.delete({
+            where: {
+                id
+            }
+        })
+        
+        return 200;
+    } catch (error) {
+        console.log(error);
+        return 500;
+    }
+}

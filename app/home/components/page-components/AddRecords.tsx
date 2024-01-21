@@ -84,7 +84,7 @@ export default function AddRecord() {
                                 <span>
                                     What part of the day?
                                 </span>
-                                <Select name="daytime" placeholder="Select option" iconColor="black" className="bg-white text-black">
+                                <Select name="daytime" defaultValue={parts[0]} placeholder="Select option" iconColor="black" className="bg-white text-black">
                                     {
                                         parts.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
@@ -94,7 +94,7 @@ export default function AddRecord() {
                                 <span>
                                     Type?
                                 </span>
-                                <Select name="type" placeholder="Select option" iconColor="black" className="bg-white text-black">
+                                <Select name="type" defaultValue={types[0]} placeholder="Select option" iconColor="black" className="bg-white text-black">
                                     {
                                         types.map((type, i) => <option key={i} value={type}>{type}</option>)
                                     }
@@ -114,7 +114,7 @@ export default function AddRecord() {
                                 <span>
                                     Did you take any medicine?
                                 </span>
-                                <Select name="meds" placeholder="Select option" iconColor="black" className="bg-white text-black">
+                                <Select name="meds" defaultValue={"false"} placeholder="Select option" iconColor="black" className="bg-white text-black">
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
                                 </Select>

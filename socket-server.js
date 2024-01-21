@@ -18,6 +18,10 @@ io.on("connection", (socket) => {
         socket.emit("addedRecord", record);
     });
 
+    socket.on("delete", id => {
+        socket.emit("removedRecord", id);
+    })
+
     socket.on("disconnect", () => {
         console.log("byee");
     });

@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 
 export interface RecordsProps {
+    id: number;
     date: Date;
     type: string;
     day_part: string;
