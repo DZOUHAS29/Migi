@@ -44,7 +44,7 @@ const Graphs = () => {
                 </StatHelpText>
             )
 
-        const procenta = (current / last) * 100;
+        const procenta = Math.ceil((current / last) * 100);
 
         if (current < last)
             return (
