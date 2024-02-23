@@ -87,6 +87,20 @@ export const getRecords = async (week: string[]): Promise<number | RecordsProps[
     }
 }
 
+export const getFilters = async (): Promise<string[] | number> => {
+    try {
+        const data = await prisma.records.groupBy({
+            by: "cause"
+        });
+
+        const filters: string[] = data.map(item => item.cause); 
+
+        return filters;
+    } catch (error) {
+        return 500;
+    }
+}
+
 const getDates = (date: string): string[] => {
     let start = moment(date).startOf("week").subtract(1, "d").startOf("week");
     let days: string[] = [];
