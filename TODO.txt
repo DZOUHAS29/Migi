@@ -1,7 +1,4 @@
 middleware 
     refresh token function -> send refresh thru cookie?
 
-Stats page 
-    Staty pro frekvenci za týdny + migrény + prášky
-    Staty pro měsíc za týdny + migrény + prášky
-    Staty za rok za týdny + migrény
+    

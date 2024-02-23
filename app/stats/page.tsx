@@ -43,8 +43,11 @@ export default function Stats() {
 
     useEffect(() => {
         filterRecords();
-        formatData(filteredData);
     }, [selectedFilter])
+
+    useEffect(() => {
+        formatData(filteredData);
+    }, [filteredData])
 
     const fetchRecords = async (): Promise<void> => {
         if (dates.length <= 0)
@@ -62,10 +65,11 @@ export default function Stats() {
     }
 
     const filterRecords = (): void => {
-        if (selectedFilter !== "All")
-            return setFilteredData(data.filter(record => record.cause === selectedFilter));
+        if (selectedFilter === "All")
+        return setFilteredData(data);
 
-        setFilteredData([]);
+        return setFilteredData(data.filter(record => record.cause === selectedFilter));
+
     }
 
     const getDates = (): void => {
@@ -182,7 +186,7 @@ export default function Stats() {
                 </div>
             </div>
             <div className='h-full'>
-                <Statistics records={filteredData.length > 0 ? filteredData : data} dates={dates} statsData={statsData} />
+                <Statistics records={filteredData} dates={dates} statsData={statsData} />
             </div>
         </div>
     )
