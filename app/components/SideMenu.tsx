@@ -54,7 +54,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <Button
                                 leftIcon={<BiUser />}
                                 className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
-                                onClick={() => { handleRedirect("home") }}
+                                onClick={() => { handleRedirect("profile") }}
                             >
                                 Profile
                             </Button>

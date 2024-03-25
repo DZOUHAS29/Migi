@@ -1,14 +1,8 @@
 "use server"
 import { cookies } from 'next/headers';
-import { RecordsProps } from './interfaces';
+import { Output, RecordsProps } from './interfaces';
 import prisma from '@/prisma-client';
 import moment from 'moment';
-
-interface Output {
-    message: string;
-    variant: string;
-    record?: RecordsProps
-}
 
 interface PrevProps {
     freq: number;

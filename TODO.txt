@@ -1,7 +1,18 @@
 middleware 
     refresh token function -> send refresh thru cookie?
 
-Stats page 
-    Staty pro frekvenci za týdny + migrény + prášky
-    Staty pro měsíc za týdny + migrény + prášky
-    Staty za rok za týdny + migrény
+auth v session storage
+
+profile stránka
+    username
+    email
+    pfp
+    zdravotní stav
+    ? nějaký staty
+
+notifikace
+    při špatným stavu
+
+kontrola stavu
+    při přidání záznamu
+    při otevření profile stránky

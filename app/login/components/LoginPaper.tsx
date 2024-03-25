@@ -19,8 +19,21 @@ export default function LoginPaper() {
 
         setWarning(data);
 
-        if (data.variant === "success")
+        if (data.variant !== "success")
+            return;
+
+        const { user } = data;
+
+        if (!user)
             return redirect("/home");
+
+        sessionStorage.setItem("user", JSON.stringify({
+            id: user.id,
+            username: user.username,
+            email: user.email
+        }));
+
+        redirect("/");
     }
 
     return (

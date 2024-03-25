@@ -3,18 +3,7 @@ import bcrypt from 'bcrypt';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from "next/headers";
 import prisma from '@/prisma-client';
-
-interface Output {
-    message: string;
-    variant: string;
-}
-
-interface User {
-    id: number | string;
-    username: string;
-    email: string;
-    password: string;
-}
+import { Output, User } from './interfaces';
 
 const signTokens = async (user: User): Promise<void> => {
     const payload = {
@@ -92,7 +81,7 @@ export const register = async (formData: FormData): Promise<Output> => {
         //vygenerovat a přiřadit JWT token
         await signTokens(user);
 
-        return { message: "User successfully added", variant: "success" };
+        return { message: "User successfully added", variant: "success", user };
     } catch (error) {
         return { message: `${error}`, variant: "error" };
     }
@@ -129,7 +118,7 @@ export const login = async (formData: FormData): Promise<Output> => {
         //vygenerovat a přiřadit JWT token
         await signTokens(user)
 
-        return { message: "Successfully logged in", variant: "success" };
+        return { message: "Successfully logged in", variant: "success", user };
     } catch (error) {
         return { message: `${error}`, variant: "error" };
     }
@@ -179,4 +168,15 @@ export const refresh = async (): Promise<Output> => {
     } catch (error) {
         return { message: "Refresh token failed", variant: "error" };
     }
+}
+
+export const getUser = async (): Promise<Output> => {
+    const user = cookies().get("user")?.value;
+
+    if (!user)
+        return { variant: "error", message: "user cookie not found" };
+
+    const parse = JSON.parse(user);
+
+    return { variant: "success", message: "user cookie found", user: parse }
 }

@@ -4,6 +4,7 @@ import { useSocket } from "@/app/contexts/socket";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Select, RadioGroup, Stack, Radio } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { RecordsProps } from "@/app/interfaces";
+import { checkHealth } from "@/app/status-actions";
 
 const types = [
     "Headache",
@@ -45,6 +46,11 @@ export default function AddRecord() {
             });
 
         socket?.emit("add", { record: data.record as RecordsProps });
+
+        const health = await checkHealth();
+
+        if (health.notification && typeof health !== "number")
+            socket?.emit("add-notification", { notification: health.notification });
 
         setWarning({
             message: data.message,

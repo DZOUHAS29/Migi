@@ -35,3 +35,24 @@ export interface StatsProps {
     }
 
 }
+
+export interface User {
+    id: number | string;
+    username: string;
+    email: string;
+    password?: string;
+}
+
+export interface Output {
+    message: string;
+    variant: string;
+    user?: User;
+    record?: RecordsProps;
+    notification?: Notification;
+}
+
+export interface Notification {
+    id: number;
+    message: string;
+    date: Date;
+}

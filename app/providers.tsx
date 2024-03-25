@@ -5,6 +5,7 @@ import { ChartsContextProvider } from './contexts/charts';
 import { SocketContextProvider } from './contexts/socket';
 import { RecordInfoContextProvider } from './contexts/record-info';
 import { RecordsContextProvider } from './contexts/records';
+import { AuthContextProvider } from './contexts/auth';
 
 export function Providers({
   children
@@ -15,15 +16,17 @@ export function Providers({
   return (
     <CacheProvider>
       <ChakraProvider>
-        <SocketContextProvider>
-          <ChartsContextProvider>
-            <RecordsContextProvider>
-              <RecordInfoContextProvider>
-                {children}
-              </RecordInfoContextProvider>
-            </RecordsContextProvider>
-          </ChartsContextProvider>
-        </SocketContextProvider>
+        <AuthContextProvider>
+          <SocketContextProvider>
+            <ChartsContextProvider>
+              <RecordsContextProvider>
+                <RecordInfoContextProvider>
+                  {children}
+                </RecordInfoContextProvider>
+              </RecordsContextProvider>
+            </ChartsContextProvider>
+          </SocketContextProvider>
+        </AuthContextProvider>
       </ChakraProvider>
     </CacheProvider>
   )

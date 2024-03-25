@@ -17,6 +17,7 @@ model users {
   password       String           @db.VarChar(60)
   refresh_tokens refresh_tokens[]
   records        records[]
+  notifications  notifications[]
 }
 
 model refresh_tokens {
@@ -35,4 +36,12 @@ model records {
   type     String   @db.VarChar(20)
   cause    String   @db.VarChar(30)
   meds     Boolean
+}
+
+model notifications {
+  id      Int      @id @default(autoincrement())
+  user    users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id Int
+  message String   @db.VarChar(100)
+  date    DateTime @db.Date
 }
