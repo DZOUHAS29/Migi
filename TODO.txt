@@ -4,15 +4,7 @@ middleware
 auth v session storage
 
 profile stránka
-    username
-    email
-    pfp
-    zdravotní stav
     ? nějaký staty
 
 notifikace
-    při špatným stavu
-
-kontrola stavu
-    při přidání záznamu
-    při otevření profile stránky
+    mazat notifikace
