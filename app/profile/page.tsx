@@ -1,6 +1,5 @@
 import React from 'react'
 import { ProfileInfo } from './components/ProfileInfo'
-import { Divider } from '@chakra-ui/react'
 import Auth from '../auth'
 
 export default function Profile() {
@@ -11,7 +10,7 @@ export default function Profile() {
                 <ProfileInfo />
             </div>
             <div>
-
+                {/* Grafy */}
             </div>
         </div>
     )
