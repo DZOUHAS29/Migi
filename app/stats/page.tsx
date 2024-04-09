@@ -7,6 +7,8 @@ import { useRecords } from '../contexts/records'
 import moment from 'moment'
 import { StatsProps } from '../interfaces'
 import { getFilters, getRecords } from '../record-actions'
+import { retrieveDays } from '../middleware/retrieveDays'
+import { retrieveStats } from '../middleware/retrieveStats'
 
 const options = [
     "week",
@@ -66,80 +68,23 @@ export default function Stats() {
 
     const filterRecords = (): void => {
         if (selectedFilter === "All")
-        return setFilteredData(data);
+            return setFilteredData(data);
 
         return setFilteredData(data.filter(record => record.cause === selectedFilter));
 
     }
 
     const getDates = (): void => {
-        let start = moment(date).startOf(option as moment.unitOfTime.StartOf);
-        let days: string[] = [];
-
-        let length;
-
-        switch (option) {
-            case "week":
-                length = 7;
-                break;
-
-            case "month":
-                length = moment(date).daysInMonth();
-                break;
-
-            case "year":
-                length = moment(date).isLeapYear() ? 366 : 365;;
-                break;
-
-            default:
-                length = 7;
-                break;
-        }
-
-        for (let i = 0; i < length; i++) {
-            days.push(start.format("YYYY-MM-DD"));
-            start.add(1, "days");
-        }
+        const days = retrieveDays(date, option);
 
         setDates(days);
     };
 
     const formatData = (array: RecordsProps[]): void => {
-        if (array.length <= 0)
-            return setStatsData([]);
+        const sorted = retrieveStats(array, dates);
 
-        const stats: StatsProps[] = array.reduce((summary: StatsProps[], { date, type, day_part, meds }: RecordsProps) => {
-            const exists = summary.find(item => item.date === moment(date).format("YYYY-MM-DD"));
-            const info = exists || { date: moment(date).format("YYYY-MM-DD"), overall: 0, headaches: 0, migraines: 0, meds: 0, part: { morning: 0, afternoon: 0, evening: 0 } };
-
-            info.overall += 1;
-
-            info.part[day_part.toLocaleLowerCase()] += 1;
-
-            if (type === "Migraine")
-                info.migraines += 1;
-            else
-                info.headaches += 1;
-
-            if (meds)
-                info.meds += 1;
-
-            if (!exists)
-                summary.push(info as StatsProps);
-
-            return summary;
-        }, []);
-
-        dates.map(date => {
-            if (stats.find(item => item.date === date))
-                return;
-
-            stats.push({ date, overall: 0, headaches: 0, migraines: 0, meds: 0, part: { morning: 0, afternoon: 0, evening: 0 } });
-        });
-
-        const sorted: StatsProps[] = stats.sort((a: StatsProps, b: StatsProps) => {
-            return moment(a.date).get('date') - moment(b.date).get('date')
-        });
+        if (!sorted)
+            return;
 
         setStatsData(sorted);
     };

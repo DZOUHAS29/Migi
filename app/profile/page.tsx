@@ -1,6 +1,7 @@
 import React from 'react'
 import { ProfileInfo } from './components/ProfileInfo'
 import Auth from '../auth'
+import { ProfileGraphs } from './components/ProfileGraphs'
 
 export default function Profile() {
     return (
@@ -10,7 +11,7 @@ export default function Profile() {
                 <ProfileInfo />
             </div>
             <div>
-                {/* Grafy */}
+                <ProfileGraphs />
             </div>
         </div>
     )

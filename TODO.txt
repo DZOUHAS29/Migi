@@ -1,8 +1,6 @@
 middleware 
     refresh token function -> send refresh thru cookie?
 
-auth v session storage
-
 profile stránka
     ? nějaký staty
 
