@@ -1,11 +1,12 @@
 "use client"
-import { Select, Stack } from '@chakra-ui/react'
+import { Input, Select, Stack } from '@chakra-ui/react'
 import Statistics from './components/Statistics'
 import { useEffect, useState } from 'react'
 import { RecordsProps } from '../interfaces'
 import { useRecords } from '../contexts/records'
 import moment from 'moment'
 import { StatsProps } from '../interfaces'
+import { getFilters, getRecords } from '../record-actions'
 
 const options = [
     "week",
@@ -16,29 +17,86 @@ const options = [
 export default function Stats() {
     const [option, setOption] = useState<string>(options[0]);
     const [data, setData] = useState<RecordsProps[]>([]);
+    const [filteredData, setFilteredData] = useState<RecordsProps[]>([]);
     const [statsData, setStatsData] = useState<StatsProps[]>([]);
     const [dates, setDates] = useState<string[]>([]);
+    const [date, setDate] = useState<string>(moment().format('YYYY-MM-DD'));
+    const [filters, setFilters] = useState<string[]>([]);
+    const [selectedFilter, setSelectedFilter] = useState<string>("All");
     const { records } = useRecords();
 
     useEffect(() => {
-        if (records.length > 0)
-            setData(records);
-
-        return () => {
-            setData([]);
-        }
+        fetchFilter();
     }, [])
 
     useEffect(() => {
         getDates();
-        formatData();
+    }, [date, option])
+
+    useEffect(() => {
+        fetchRecords();
+    }, [dates])
+
+    useEffect(() => {
+        formatData(data);
     }, [data])
 
+    useEffect(() => {
+        filterRecords();
+    }, [selectedFilter])
+
+    useEffect(() => {
+        formatData(filteredData);
+    }, [filteredData])
+
+    const fetchRecords = async (): Promise<void> => {
+        if (dates.length <= 0)
+            return;
+
+        const data = await getRecords(dates);
+
+        setData(data as RecordsProps[]);
+    }
+
+    const fetchFilter = async (): Promise<void> => {
+        const data = await getFilters();
+
+        setFilters(["All", ...data as string[]]);
+    }
+
+    const filterRecords = (): void => {
+        if (selectedFilter === "All")
+        return setFilteredData(data);
+
+        return setFilteredData(data.filter(record => record.cause === selectedFilter));
+
+    }
+
     const getDates = (): void => {
-        let start = moment().startOf("week");
+        let start = moment(date).startOf(option as moment.unitOfTime.StartOf);
         let days: string[] = [];
 
-        for (let i = 0; i < 7; i++) {
+        let length;
+
+        switch (option) {
+            case "week":
+                length = 7;
+                break;
+
+            case "month":
+                length = moment(date).daysInMonth();
+                break;
+
+            case "year":
+                length = moment(date).isLeapYear() ? 366 : 365;;
+                break;
+
+            default:
+                length = 7;
+                break;
+        }
+
+        for (let i = 0; i < length; i++) {
             days.push(start.format("YYYY-MM-DD"));
             start.add(1, "days");
         }
@@ -46,11 +104,11 @@ export default function Stats() {
         setDates(days);
     };
 
-    const formatData = (): void => {
-        if (data.length <= 0)
-            return;
+    const formatData = (array: RecordsProps[]): void => {
+        if (array.length <= 0)
+            return setStatsData([]);
 
-        const stats: StatsProps[] = data.reduce((summary: StatsProps[], { date, type, day_part, meds }: RecordsProps) => {
+        const stats: StatsProps[] = array.reduce((summary: StatsProps[], { date, type, day_part, meds }: RecordsProps) => {
             const exists = summary.find(item => item.date === moment(date).format("YYYY-MM-DD"));
             const info = exists || { date: moment(date).format("YYYY-MM-DD"), overall: 0, headaches: 0, migraines: 0, meds: 0, part: { morning: 0, afternoon: 0, evening: 0 } };
 
@@ -88,25 +146,47 @@ export default function Stats() {
 
     return (
         <div className='flex flex-col h-screen'>
-            <div className='p-2 flex space-x-2 pl-9'>
-                <div className='w-1/12'>
-                    <Select
-                        onChange={event => { setOption(event.target.value) }}
-                        value={option}
-                    >
-                        {
-                            options.map((option, i) => <option key={i} value={option} className='text-black'>{option[0].toUpperCase() + option.substring(1, option.length)}</option>)
-                        }
-                    </Select>
+            <div className='p-2 flex space-x-2 pl-10 justify-between pr-10'>
+                <div className='flex gap-x-2'>
+                    <div>
+                        <Select
+                            onChange={event => { setOption(event.target.value) }}
+                            value={option}
+                        >
+                            {
+                                options.map((option, i) => <option key={i} value={option} className='text-black'>{option[0].toUpperCase() + option.substring(1, option.length)}</option>)
+                            }
+                        </Select>
+                    </div>
+                    <div className='self-center text-xl'>
+                        <span>
+                            Statistics
+                        </span>
+                    </div>
                 </div>
-                <div className='self-center text-xl'>
-                    <span>
-                        Statistics
-                    </span>
+                <div className='flex gap-x-2'>
+                    <div>
+                        <Select
+                            value={selectedFilter}
+                            onChange={event => { setSelectedFilter(event.target.value) }}
+                        >
+                            {
+                                filters?.map((filter, i) => <option key={i} value={filter} className='text-black'>{filter}</option>)
+                            }
+                        </Select>
+                    </div>
+                    <div>
+                        <Input
+                            type='date'
+                            className='calendar'
+                            value={date}
+                            onChange={event => { setDate(event.target.value) }}
+                        />
+                    </div>
                 </div>
             </div>
             <div className='h-full'>
-                <Statistics records={data} dates={dates} statsData={statsData} />
+                <Statistics records={filteredData} dates={dates} statsData={statsData} />
             </div>
         </div>
     )
