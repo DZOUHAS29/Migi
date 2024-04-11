@@ -30,7 +30,7 @@ export const ProfileInfo = () => {
 
 
     return (
-        <div className='flex space-x-4 justify-center'>
+        <div className='flex space-x-4'>
             <div className='text-center text-9xl'>
                 <Icon
                     as={FaUser}

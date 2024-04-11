@@ -5,7 +5,7 @@ import { ProfileGraphs } from './components/ProfileGraphs'
 
 export default function Profile() {
     return (
-        <div className='flex flex-col space-y-2'>
+        <div className='flex flex-col space-y-2 pl-9 pr-9'>
             <Auth />
             <div>
                 <ProfileInfo />

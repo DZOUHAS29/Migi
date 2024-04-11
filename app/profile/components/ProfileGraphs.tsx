@@ -1,57 +1,16 @@
 "use client"
-import { RecordsProps, StatsProps } from '@/app/interfaces'
+import { GraphProps, RecordsProps, StatsProps } from '@/app/interfaces'
 import { retrieveDays } from '@/app/middleware/retrieveDays'
 import { retrieveStats } from '@/app/middleware/retrieveStats'
-import { getRecords } from '@/app/record-actions'
+import { getRecords, monthlyCount } from '@/app/record-actions'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
-import { Doughnut } from 'react-chartjs-2'
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    BarElement
-} from 'chart.js';
+import { Graphs } from './Graphs'
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
-
-
-interface GraphProps {
-    parts: {
-        mornings: number;
-        afternoons: number;
-        evenings: number;
-    },
-    types: {
-        headaches: number;
-        migraines: number;
-    }
-}
 
 const defaultStat = {
-    parts: {
-        mornings: 0,
-        afternoons: 0,
-        evenings: 0,
-    },
-    types: {
-        headaches: 0,
-        migraines: 0,
-    }
+    parts: [],
+    types: []
 }
 
 export const ProfileGraphs = () => {
@@ -110,59 +69,109 @@ export const ProfileGraphs = () => {
     }
 
     const formatData = (stats: StatsProps[]): GraphProps => {
-        const parts = {
-            mornings: stats.filter(({ part: { morning } }) => morning > 0).length,
-            afternoons: stats.filter(({ part: { afternoon } }) => afternoon > 0).length,
-            evenings: stats.filter(({ part: { evening } }) => evening > 0).length,
-        }
+        const parts = [
+            stats.filter(({ part: { morning } }) => morning > 0).length,
+            stats.filter(({ part: { afternoon } }) => afternoon > 0).length,
+            stats.filter(({ part: { evening } }) => evening > 0).length,
+        ]
 
-        const types = {
-            headaches: stats.filter(({ headaches }) => headaches > 0).length,
-            migraines: stats.filter(({ migraines }) => migraines > 0).length
-        }
+        const types = [
+            stats.filter(({ headaches }) => headaches > 0).length,
+            stats.filter(({ migraines }) => migraines > 0).length
+        ]
 
         return { parts, types };
     }
 
+    const getMonthlyStats = async (): Promise<void> => {
+        const data = await monthlyCount();
+    }
+
     const init = (): void => {
-        const last = getPreviousMonth();
-        const current = getcurrentMonth();
+        getPreviousMonth();
+        getcurrentMonth();
+        getMonthlyStats();
     }
 
     return (
-        <div className='flex flex-col'>
-            <div className='flex'>
+        <div className='flex flex-col gap-y-4'>
+            <div className='flex flex-col'>
                 <div>
-                    {
-                        (() => {
-                            if (current && current.parts) {
-                                return (
-                                    <Doughnut
-                                        data={{
-                                            labels: Object.keys(current.parts).map(part => part),
-                                            datasets: [{
-                                                label: 'ahoj',
-                                                data: Object.keys(current.parts).map(part => current.parts[part as keyof typeof current.parts]),
-                                                backgroundColor: [
-                                                    'rgb(255, 99, 132)',
-                                                    'rgb(54, 162, 235)',
-                                                    'rgb(255, 205, 86)'
-                                                ],
-                                                hoverOffset: 4
-                                            }]
-                                        }}
-                                    />
-                                );
-                            }
-                        })()
-                    }
+                    Your statistics this month
                 </div>
+                <Graphs parts={current.parts} types={current.types} />
+            </div>
+            <div className='flex flex-col'>
                 <div>
-                    {/*  Type <Bar /> */}
+                    Your statistics last month
                 </div>
+                <Graphs parts={previous.parts} types={previous.types} />
             </div>
             <div>
-                {/* mesice <Line /> */}
+                {/* mesice 
+                    <Line
+                            data={{
+                                labels: dates.map(date => moment(date).format("MM/DD/YYYY")),
+                                datasets: [
+                                    {
+                                        label: 'Overall',
+                                        data: statsData.map(data => data.overall),
+                                        borderColor: 'rgba(141, 185, 184, 1)',
+                                        backgroundColor: 'rgba(141, 185, 184, 1)',
+                                    },
+                                    {
+                                        label: 'Migraines',
+                                        data: statsData.map(data => data.migraines),
+                                        borderColor: 'rgba(179, 216, 156, 1)',
+                                        backgroundColor: 'rgba(179, 216, 156, 1)',
+                                    },
+                                    {
+                                        label: 'Headaches',
+                                        data: statsData.map(data => data.headaches),
+                                        borderColor: 'rgba(208, 239, 177, 1)',
+                                        backgroundColor: 'rgba(208, 239, 177, 1)',
+                                    },
+                                ],
+                            }}
+
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'top' as const,
+                                        labels: {
+                                            color: "white"
+                                        }
+                                    },
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        grid: {
+                                            color: "rgba(255, 255, 255, 0.6)",
+                                        },
+                                        ticks: {
+                                            color: "white",
+                                            callback: function (value) {
+                                                if (Number.isInteger(value)) {
+                                                    return value;
+                                                }
+                                            },
+                                        },
+                                    },
+                                    x: {
+                                        grid: {
+                                            color: "rgba(255, 255, 255, 0.6)",
+                                        },
+                                        ticks: {
+                                            color: "white",
+                                        }
+                                    },
+                                },
+                            }}
+                        />
+                */}
             </div>
         </div>
     )

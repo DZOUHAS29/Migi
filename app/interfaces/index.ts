@@ -56,3 +56,8 @@ export interface Notification {
     message: string;
     date: Date;
 }
+
+export interface GraphProps {
+    parts: number[],
+    types: number[]
+}

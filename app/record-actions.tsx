@@ -159,3 +159,20 @@ export const RemoveRecord = async (id: number): Promise<number> => {
         return 500;
     }
 }
+
+export const monthlyCount = async (): Promise<object[] | number> => {
+    const currentMonth = moment().month() + 1;
+    const monthLength = [];
+
+    for (let i = 1; i < currentMonth + 1; i++) {
+        monthLength.push(i);
+    }
+
+    try {
+        //count where month in array, gorup by date, order by date asc
+
+        return 200;
+    } catch (error) {
+        return 500;
+    }
+}
