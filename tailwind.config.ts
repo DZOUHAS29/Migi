@@ -20,6 +20,7 @@ const config: Config = {
         "light-dark-blue": "#8DB9B8",
         "celadon": "#B3D89C",
         "tea-green": "#D0EFB1",
+        "ucla-dark-blue": "#3E5C7A",
       }
     },
   },

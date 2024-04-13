@@ -6,6 +6,7 @@ import { getRecords, monthlyCount } from '@/app/record-actions'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { Graphs } from './Graphs'
+import { Line } from 'react-chartjs-2'
 
 
 const defaultStat = {
@@ -16,6 +17,7 @@ const defaultStat = {
 export const ProfileGraphs = () => {
     const [current, setCurrent] = useState<GraphProps>(defaultStat);
     const [previous, setPrevious] = useState<GraphProps>(defaultStat);
+    const [year, setYear] = useState<number[]>([]);
 
     useEffect(() => {
         init();
@@ -85,6 +87,11 @@ export const ProfileGraphs = () => {
 
     const getMonthlyStats = async (): Promise<void> => {
         const data = await monthlyCount();
+
+        if (typeof data === "number")
+            return;
+
+        setYear(data);
     }
 
     const init = (): void => {
@@ -94,40 +101,20 @@ export const ProfileGraphs = () => {
     }
 
     return (
-        <div className='flex flex-col gap-y-4'>
-            <div className='flex flex-col'>
-                <div>
-                    Your statistics this month
-                </div>
-                <Graphs parts={current.parts} types={current.types} />
-            </div>
-            <div className='flex flex-col'>
-                <div>
-                    Your statistics last month
-                </div>
-                <Graphs parts={previous.parts} types={previous.types} />
-            </div>
-            <div>
-                {/* mesice 
-                    <Line
+        <div className='flex'>
+            <div className='flex-grow'>
+                <div className='flex flex-col'>
+                    <div className='text-xl font-semibold'>
+                        Your statistics throughout the year
+                    </div>
+                    <div>
+                        <Line
                             data={{
-                                labels: dates.map(date => moment(date).format("MM/DD/YYYY")),
+                                labels: moment.monthsShort(),
                                 datasets: [
                                     {
                                         label: 'Overall',
-                                        data: statsData.map(data => data.overall),
-                                        borderColor: 'rgba(141, 185, 184, 1)',
-                                        backgroundColor: 'rgba(141, 185, 184, 1)',
-                                    },
-                                    {
-                                        label: 'Migraines',
-                                        data: statsData.map(data => data.migraines),
-                                        borderColor: 'rgba(179, 216, 156, 1)',
-                                        backgroundColor: 'rgba(179, 216, 156, 1)',
-                                    },
-                                    {
-                                        label: 'Headaches',
-                                        data: statsData.map(data => data.headaches),
+                                        data: year.map(data => data),
                                         borderColor: 'rgba(208, 239, 177, 1)',
                                         backgroundColor: 'rgba(208, 239, 177, 1)',
                                     },
@@ -136,7 +123,7 @@ export const ProfileGraphs = () => {
 
                             options={{
                                 responsive: true,
-                                maintainAspectRatio: false,
+                                maintainAspectRatio: true,
                                 plugins: {
                                     legend: {
                                         position: 'top' as const,
@@ -171,7 +158,22 @@ export const ProfileGraphs = () => {
                                 },
                             }}
                         />
-                */}
+                    </div>
+                </div>
+            </div>
+            <div className=' flex flex-col gap-y-2'>
+                <div className='flex flex-col'>
+                    <div className='text-xl font-semibold'>
+                        Your statistics this month
+                    </div>
+                    <Graphs parts={current.parts} types={current.types} />
+                </div>
+                <div className='flex flex-col'>
+                    <div className='text-xl font-semibold'>
+                        Your statistics last month
+                    </div>
+                    <Graphs parts={previous.parts} types={previous.types} />
+                </div>
             </div>
         </div>
     )

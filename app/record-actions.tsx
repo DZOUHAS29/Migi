@@ -87,7 +87,7 @@ export const getFilters = async (): Promise<string[] | number> => {
             by: "cause"
         });
 
-        const filters: string[] = data.map(item => item.cause); 
+        const filters: string[] = data.map(item => item.cause);
 
         return filters;
     } catch (error) {
@@ -152,7 +152,7 @@ export const RemoveRecord = async (id: number): Promise<number> => {
                 id
             }
         })
-        
+
         return 200;
     } catch (error) {
         console.log(error);
@@ -160,8 +160,16 @@ export const RemoveRecord = async (id: number): Promise<number> => {
     }
 }
 
-export const monthlyCount = async (): Promise<object[] | number> => {
+export const monthlyCount = async (): Promise<number[] | number> => {
+    const user = cookies().get("user");
+
+    if (!user || !user.value)
+        return 304;
+
+    const { id } = JSON.parse(user.value);
+
     const currentMonth = moment().month() + 1;
+    const currentYear = moment().year();
     const monthLength = [];
 
     for (let i = 1; i < currentMonth + 1; i++) {
@@ -169,9 +177,14 @@ export const monthlyCount = async (): Promise<object[] | number> => {
     }
 
     try {
-        //count where month in array, gorup by date, order by date asc
+        const records: RecordsProps[] = await prisma.$queryRaw`SELECT * FROM records WHERE YEAR(date) = ${currentYear} AND user_id = ${id}`;
 
-        return 200;
+        if (!records)
+            return 403;
+
+        const data = monthLength.map(month => records.filter(({ date }) => moment(date).month() + 1 === month).length)
+
+        return data;
     } catch (error) {
         return 500;
     }

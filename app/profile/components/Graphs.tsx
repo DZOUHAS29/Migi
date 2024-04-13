@@ -37,12 +37,21 @@ export const Graphs = (data: GraphProps) => {
                             label: 'Count',
                             data: data?.parts.map(part => part),
                             backgroundColor: [
-                                'rgb(255, 99, 132)',
-                                'rgb(54, 162, 235)',
-                                'rgb(255, 205, 86)'
+                                'rgba(141, 185, 184, 1)',
+                                'rgba(179, 216, 156, 1)',
+                                'rgba(208, 239, 177, 1)'
+                            ],
+                            borderColor: [
+                                'rgba(141, 185, 184, 1)',
+                                'rgba(179, 216, 156, 1)',
+                                'rgba(208, 239, 177, 1)'
                             ],
                             hoverOffset: 4
                         }]
+                    }}
+
+                    options={{
+                        color: "white"
                     }}
                 />
             </div>
