@@ -31,7 +31,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
             size={"sm"}
         >
             <DrawerOverlay />
-            <DrawerContent className="bg-air-blue rounded">
+            <DrawerContent className="bg-ucla-blue rounded">
                 <DrawerCloseButton />
                 <DrawerHeader >
                     Menu
@@ -44,7 +44,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                         <div>
                             <Button
                                 leftIcon={<BiHomeSmile />}
-                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                className="w-full h-16 text-white text-2xl  hover:bg-ucla-dark-blue"
                                 onClick={() => { handleRedirect("home") }}
                             >
                                 Home
@@ -53,7 +53,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                         <div>
                             <Button
                                 leftIcon={<BiUser />}
-                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                className="w-full h-16 text-white text-2xl  hover:bg-ucla-dark-blue"
                                 onClick={() => { handleRedirect("profile") }}
                             >
                                 Profile
@@ -62,7 +62,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                         <div>
                             <Button
                                 leftIcon={<IoStatsChart />}
-                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                className="w-full h-16 text-white text-2xl  hover:bg-ucla-dark-blue"
                                 onClick={() => { handleRedirect("stats") }}
                             >
                                 Statistics
@@ -71,7 +71,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                         <div>
                             <Button
                                 leftIcon={<IoIosSettings />}
-                                className="w-full h-16 text-white text-2xl  hover:bg-light-dark-blue"
+                                className="w-full h-16 text-white text-2xl  hover:bg-ucla-dark-blue"
                                 onClick={() => { handleRedirect("home") }}
                             >
                                 Settings

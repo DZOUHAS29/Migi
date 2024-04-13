@@ -4,6 +4,7 @@ import { Notification } from '../interfaces';
 import { getNotifications } from "../status-actions";
 import { GrStatusWarningSmall } from "@react-icons/all-files/gr/GrStatusWarningSmall";
 import { useSocket } from "../contexts/socket";
+import { NotificationBody } from "./NotificationBody";
 
 type props = {
     open: boolean;
@@ -52,7 +53,7 @@ export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
             size={"sm"}
         >
             <DrawerOverlay />
-            <DrawerContent className="bg-air-blue rounded">
+            <DrawerContent className="bg-ucla-blue rounded">
                 <DrawerCloseButton />
                 <DrawerHeader>
                     Notifications
@@ -61,21 +62,7 @@ export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
                     <div className="flex flex-col gap-y-2">
                         {
                             notifications.length > 0 ?
-                                notifications.map(({ message }) =>
-                                    <div className="bg-light-dark-blue shadow-md rounded p-2 flex items-center justify-between">
-                                        <div>
-                                            <Icon
-                                                as={GrStatusWarningSmall}
-                                                className='text-orange-400 self-center'
-                                            />
-                                        </div>
-                                        <div>
-                                            {message}
-                                        </div>
-                                        <div>
-                                            <CloseButton />
-                                        </div>
-                                    </div>)
+                                notifications.map(({ message }) => <NotificationBody message={message} />)
                                 :
                                 "No notifications"
                         }
