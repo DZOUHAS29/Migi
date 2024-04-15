@@ -2,7 +2,10 @@ middleware
     refresh token function -> send refresh thru cookie?
 
 profile stránka
-    ? nějaký staty
+    export do csv
 
 notifikace
     mazat notifikace
+    otevrit notifikaci
+
+RESPONZIVNOST!!
