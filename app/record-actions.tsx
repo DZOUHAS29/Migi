@@ -3,10 +3,19 @@ import { cookies } from 'next/headers';
 import { Output, RecordsProps } from './interfaces';
 import prisma from '@/prisma-client';
 import moment from 'moment';
+import { createObjectCsvWriter } from 'csv-writer';
 
 interface PrevProps {
     freq: number;
     migraines: number;
+}
+
+interface FormatProps {
+    date: string;
+    type: string;
+    cause: string;
+    time: string;
+    meds: string;
 }
 
 export const addRecord = async (formData: FormData): Promise<Output> => {
@@ -185,6 +194,44 @@ export const monthlyCount = async (): Promise<number[] | number> => {
         const data = monthLength.map(month => records.filter(({ date }) => moment(date).month() + 1 === month).length)
 
         return data;
+    } catch (error) {
+        return 500;
+    }
+}
+
+export const csvRecords = async (): Promise<FormatProps[] | number> => {
+    const user = cookies().get("user");
+
+    if (!user || !user.value)
+        return 304;
+
+    const { id } = JSON.parse(user.value);
+
+    const currentMonth = moment().month() + 1;
+    const currentYear = moment().year();
+    const monthLength: number[] = [];
+
+    for (let i = currentMonth; i >= currentMonth - 3 + 1; i--) {
+        monthLength.push(i);
+    }
+
+    try {
+        const records: RecordsProps[] = await prisma.$queryRaw`SELECT date, type, cause, meds, day_part FROM records WHERE YEAR(date) = ${currentYear} AND user_id = ${id} ORDER BY date DESC`;
+
+        if (!records)
+            return 403;
+
+        const data = records.filter(({ date }) => monthLength.find(month => month === moment(date).month()));
+
+        const format = data.reduce((array: FormatProps[], { date, type, cause, day_part, meds }) => {
+            const row = { date: moment(date).format("YYYY-MM-DD"), type, cause, time: day_part, meds: meds ? "YES" : "NO" };
+
+            array.push(row);
+
+            return array;
+        }, []);
+
+        return format;
     } catch (error) {
         return 500;
     }
