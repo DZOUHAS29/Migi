@@ -1,9 +1,6 @@
 middleware 
     refresh token function -> send refresh thru cookie?
 
-profile stránka
-    export do csv
-
 notifikace
     mazat notifikace
     otevrit notifikaci
