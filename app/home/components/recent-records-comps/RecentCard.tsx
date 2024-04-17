@@ -36,7 +36,7 @@ export const RecentCard = ({ date, dayPart, cause, meds, type }: props) => {
                     </div>
                     <div className="grid grid-cols-12 pt-3">
                         <div className="col-span-2">
-                            {moment(date).format("MM/DD/YYYY")}
+                            {moment(date).format("MM/DD")}
                         </div>
                         <div className="col-span-4 text-center">
                             {type}

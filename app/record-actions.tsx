@@ -3,7 +3,6 @@ import { cookies } from 'next/headers';
 import { Output, RecordsProps } from './interfaces';
 import prisma from '@/prisma-client';
 import moment from 'moment';
-import { createObjectCsvWriter } from 'csv-writer';
 
 interface PrevProps {
     freq: number;

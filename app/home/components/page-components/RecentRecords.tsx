@@ -45,7 +45,7 @@ export const RecentRecords = async () => {
     const records = await getRecords();
 
     return (
-        <div className="flex flex-col bg-air-blue p-2 rounded shadow-md text-white">
+        <div className="flex flex-col bg-air-blue p-2 rounded text-white">
             <div className="pl-2">
                 <span className="font-medium">
                     Recent records
