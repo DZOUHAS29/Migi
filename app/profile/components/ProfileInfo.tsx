@@ -37,7 +37,7 @@ export const ProfileInfo = () => {
                             />
                         </div>
                         <div>
-                            You're health is perfectly fine!
+                            You&apos;re health is perfectly fine!
                         </div>
                     </div>
                     :
@@ -49,7 +49,7 @@ export const ProfileInfo = () => {
                             />
                         </div>
                         <div>
-                            You're health status is concerning!
+                            You&apos;re health status is concerning!
                         </div>
                     </div>
             }

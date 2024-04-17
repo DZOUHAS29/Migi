@@ -6,6 +6,7 @@ import { BiLogOut } from "@react-icons/all-files/bi/BiLogOut";
 import { Button, Divider, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay } from "@chakra-ui/react";
 import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { logOut } from "../actions";
 
 type props = {
     open: boolean;
@@ -20,6 +21,13 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
     }
     const handleRedirect = (path: string) => {
         router.push(`/${path}`);
+        setOpen(false);
+    };
+
+    const handleLogout = () => {
+        sessionStorage.clear();
+        logOut();
+        router.push("/login");
         setOpen(false);
     };
 
@@ -72,7 +80,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <Button
                                 leftIcon={<IoIosSettings />}
                                 className="w-full h-16 text-white text-2xl  hover:bg-ucla-dark-blue"
-                                onClick={() => { handleRedirect("home") }}
+                                onClick={() => { handleRedirect("settings") }}
                             >
                                 Settings
                             </Button>
@@ -81,6 +89,7 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
                             <Button
                                 leftIcon={<BiLogOut />}
                                 className="w-full h-16 text-white bg-red-500 text-2xl  hover:bg-red-600"
+                                onClick={handleLogout}
                             >
                                 Log out
                             </Button>

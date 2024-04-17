@@ -26,18 +26,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/login"));
 
     try {
-        const { payload } = await jwtVerify(cookie, key);
-
-        //set permission
-        response.cookies.set({
-            name: "permission",
-            value: payload.role as string,
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 60 * 60,
-            path: "/"
-        });
+        await jwtVerify(cookie, key);
 
         return response;
     } catch (error) {

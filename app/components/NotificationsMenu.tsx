@@ -70,7 +70,7 @@ export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
                     <div className="flex flex-col gap-y-2">
                         {
                             notifications.length > 0 ?
-                                notifications.map(({ id, message }) => <NotificationBody message={message} id={id} />)
+                                notifications.map(({ id, message }) => <NotificationBody key={id} message={message} id={id} />)
                                 :
                                 "No notifications"
                         }

@@ -37,7 +37,7 @@ const signTokens = async (user: User): Promise<void> => {
         value: JSON.stringify({
             id: user.id,
             username: user.username,
-            email: user.email
+            email: user.email,
         }),
         httpOnly: true,
         sameSite: "strict",
@@ -179,4 +179,11 @@ export const getUser = async (): Promise<Output> => {
     const parse = JSON.parse(user);
 
     return { variant: "success", message: "user cookie found", user: parse }
+}
+
+export const logOut = async (): Promise<Output> => {
+    cookies().delete("jwt");
+    cookies().delete("user");
+
+    return { variant: "success", message: "user log out" }
 }
