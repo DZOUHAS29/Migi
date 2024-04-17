@@ -84,7 +84,7 @@ export default function Stats() {
         const sorted = retrieveStats(array, dates);
 
         if (!sorted)
-            return;
+            return setStatsData([]);
 
         setStatsData(sorted);
     };
