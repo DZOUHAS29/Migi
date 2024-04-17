@@ -1,5 +1,4 @@
 "use server"
-
 import moment from "moment";
 import { Notification, Output } from "./interfaces"
 import prisma from "@/prisma-client";
@@ -16,7 +15,7 @@ export const checkHealth = async (): Promise<Output> => {
             }
         })
 
-        if (data < 10)
+        if (data < 2)
             return { variant: "success", message: "ok" };
 
         const notification = await addNotification("Hey! you're health is getting concerning!");
@@ -66,6 +65,20 @@ export const getNotifications = async (): Promise<Notification[] | number> => {
         const data = await prisma.notifications.findMany({
             where: {
                 user_id: parse.id
+            }
+        });
+
+        return data;
+    } catch (error) {
+        return 500;
+    }
+}
+
+export const removeNotification = async (id: number): Promise<Notification | number> => {
+    try {
+        const data = await prisma.notifications.delete({
+            where: {
+                id
             }
         });
 

@@ -20,11 +20,15 @@ io.on("connection", (socket) => {
 
     socket.on("delete", id => {
         socket.emit("removedRecord", id);
-    })
+    });
 
     socket.on("add-notification", ({ notification }) => {
         socket.emit("new-notification", notification);
-    })
+    });
+
+    socket.on("delete-notification", ({ notification }) => {
+        socket.emit("remove-notification", notification);
+    });
 
     socket.on("disconnect", () => {
         console.log("byee");

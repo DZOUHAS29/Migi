@@ -40,8 +40,16 @@ export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
             setNotifications(notifications => [...notifications, notification]);
         });
 
+        socket?.on("remove-notification", ({ id }) => {
+            if (!id)
+                return;
+
+            setNotifications(notifications => notifications.filter(item => item.id !== id));
+        });
+
         return () => {
             socket?.off("new-notification");
+            socket?.off("remove-notification");
         }
     }, [socket])
 
@@ -62,7 +70,7 @@ export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
                     <div className="flex flex-col gap-y-2">
                         {
                             notifications.length > 0 ?
-                                notifications.map(({ message }) => <NotificationBody message={message} />)
+                                notifications.map(({ id, message }) => <NotificationBody message={message} id={id} />)
                                 :
                                 "No notifications"
                         }
