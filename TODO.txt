@@ -1,8 +1,0 @@
-middleware 
-    refresh token function -> send refresh thru cookie?
-
-notifikace
-    mazat notifikace
-    otevrit notifikaci
-
-RESPONZIVNOST!!
