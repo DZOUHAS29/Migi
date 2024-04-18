@@ -15,7 +15,10 @@ export default function Settings() {
     return (
         <div className="flex justify-center">
             <Auth />
-            <div className="flex flex-col gap-y-2 bg-ucla-dark-blue w-1/4 p-9 rounded">
+            <div className="flex flex-col bg-ucla-dark-blue w-1/2 p-9 rounded">
+                <div className="text-5xl font-bold pb-6">
+                    Settings
+                </div>
                 <form>
                     <SettingComp name="Username" value={auth.username} type="text" />
                     <SettingComp name="Email" value={auth.email} type="text" />

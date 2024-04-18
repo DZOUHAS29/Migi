@@ -38,7 +38,7 @@ export default function LoginPaper() {
 
     return (
         <form>
-            <div className="flex flex-col p-5 bg-air-blue rounded shadow-md">
+            <div className="flex flex-col p-5 bg-air-blue rounded">
                 <div className="grid p-2 text-center text-xl">
                     <span>Welcome Back!</span>
                 </div>

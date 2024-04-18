@@ -10,7 +10,7 @@ interface SettingCompProps {
 
 export const SettingComp = ({ name, value, type }: SettingCompProps) => {
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col pt-2'>
             <div className='font-semibold text-xl'>
                 {name}
             </div>

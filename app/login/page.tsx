@@ -29,7 +29,7 @@ export default function Login() {
       </div>
       <div className="col-span-1">
         <div className="grid grid-rows-6">
-          <div className="row-span-6 bg-celadon rounded shadow-md h-full">
+          <div className="row-span-6 bg-celadon rounded h-full">
             <Socials />
           </div>
         </div>

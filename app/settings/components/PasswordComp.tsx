@@ -8,7 +8,7 @@ interface SettingCompProps {
 
 export const PasswordComp = ({ value }: SettingCompProps) => {
     return (
-        <div className='flex flex-col gap-y-2'>
+        <div className='flex flex-col pt-2 gap-y-2'>
             <div className='text-xl font-semibold'>
                 Old password
             </div>
