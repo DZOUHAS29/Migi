@@ -12,13 +12,14 @@ export default function LoginPaper() {
     const submit = async (formData: globalThis.FormData) => {
         const data = await login(formData);
 
-        toast({
-            title: data.message,
-            status: data.variant === "success" ? "success" : "error",
-            duration: data.variant === "success" ? 3000 : 5000,
-            isClosable: true,
-            position: "bottom-left"
-        })
+        if (data.variant === "error")
+            return toast({
+                title: data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left"
+            })
 
         if (data.variant !== "success")
             return;

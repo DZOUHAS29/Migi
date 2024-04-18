@@ -21,7 +21,7 @@ export default function AddRecord() {
     const { socket } = useSocket();
     const toast = useToast();
 
-    const handle = async (formData: FormData): Promise<ToastId> => {
+    const handle = async (formData: FormData): Promise<ToastId | void> => {
         const data = await addRecord(formData);
 
         if (data.variant === "error")
@@ -41,14 +41,6 @@ export default function AddRecord() {
             socket?.emit("add-notification", { notification: health.notification });
 
         closeAdd();
-
-        return toast({
-            title: "Record has been added",
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-            position: "bottom-left"
-        });
     }
 
     return (

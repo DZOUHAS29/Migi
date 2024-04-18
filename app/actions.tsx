@@ -120,7 +120,7 @@ export const login = async (formData: FormData): Promise<Output> => {
 
         return { message: "Success: Successfully logged in", variant: "success", user };
     } catch (error) {
-        return { message: `Error:${error}`, variant: "error" };
+        return { message: `${error}`, variant: "error" };
     }
 }
 
