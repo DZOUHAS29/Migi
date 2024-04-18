@@ -1,23 +1,24 @@
 "use client"
 import React from 'react';
-import { Input } from "@chakra-ui/react";
+import { Input, useToast } from "@chakra-ui/react";
 import Link from "next/link";
 import { useState } from "react";
 import { login } from "@/app/actions"
 import { redirect } from "next/navigation";
 
-interface Warning {
-    message: string,
-    variant: string
-}
-
 export default function LoginPaper() {
-    const [warning, setWarning] = useState<Warning>({ message: "", variant: "" });
+    const toast = useToast();
 
     const submit = async (formData: globalThis.FormData) => {
         const data = await login(formData);
 
-        setWarning(data);
+        toast({
+            title: data.message,
+            status: data.variant === "success" ? "success" : "error",
+            duration: data.variant === "success" ? 3000 : 5000,
+            isClosable: true,
+            position: "bottom-left"
+        })
 
         if (data.variant !== "success")
             return;
@@ -57,14 +58,6 @@ export default function LoginPaper() {
                         name="password"
                         className="bg-white text-black"
                     />
-                </div>
-                <div className="grid">
-                    {
-                        warning.variant === "" ?
-                            <></>
-                            :
-                            <span className={`${warning.variant === "error" ? "text-red-700" : "text-green-600"} p-2 text-center`}>{warning.message}</span>
-                    }
                 </div>
                 <div className="grid justify-center p-2">
                     <button className="bg-light-blue shadow-sm text-white hover:bg-light-dark-blue p-2 rounded" formAction={submit}>Log in</button>

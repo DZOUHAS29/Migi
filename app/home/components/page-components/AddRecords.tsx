@@ -1,8 +1,7 @@
 import { addRecord } from "@/app/record-actions";
 import { useAddData } from "@/app/contexts/add-data";
 import { useSocket } from "@/app/contexts/socket";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Select, RadioGroup, Stack, Radio } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Select, RadioGroup, Stack, Radio, useToast, ToastId } from "@chakra-ui/react";
 import { RecordsProps } from "@/app/interfaces";
 import { checkHealth } from "@/app/status-actions";
 
@@ -17,32 +16,21 @@ const parts = [
     "Evening",
 ];
 
-interface Message {
-    message: string;
-    variant: string;
-}
-
 export default function AddRecord() {
-    const [warning, setWarning] = useState<Message>({ message: "", variant: "" });
     const { date, open, closeAdd } = useAddData();
     const { socket } = useSocket();
+    const toast = useToast();
 
-    useEffect(() => {
-        if (!open)
-            setWarning({
-                message: "",
-                variant: ""
-            });
-
-    }, [open])
-
-    const handle = async (formData: FormData): Promise<void> => {
+    const handle = async (formData: FormData): Promise<ToastId> => {
         const data = await addRecord(formData);
 
         if (data.variant === "error")
-            return setWarning({
-                message: data.message,
-                variant: data.variant
+            return toast({
+                title: data.message,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left"
             });
 
         socket?.emit("add", { record: data.record as RecordsProps });
@@ -52,12 +40,15 @@ export default function AddRecord() {
         if (health.notification && typeof health !== "number")
             socket?.emit("add-notification", { notification: health.notification });
 
-        setWarning({
-            message: data.message,
-            variant: data.variant
-        });
+        closeAdd();
 
-        return closeAdd();
+        return toast({
+            title: "Record has been added",
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+            position: "bottom-left"
+        });
     }
 
     return (
@@ -125,14 +116,6 @@ export default function AddRecord() {
                                     <option value="false">No</option>
                                 </Select>
                             </div>
-                            {
-                                warning.message === "" ?
-                                    null
-                                    :
-                                    <div className={`${warning.variant === "error" ? "bg-red-500" : "bg-green-500"} text-center text-white rounded p-1`}>
-                                        {warning.message}
-                                    </div>
-                            }
                         </div>
                     </ModalBody>
                     <ModalFooter>

@@ -26,10 +26,10 @@ export const addRecord = async (formData: FormData): Promise<Output> => {
     const user = cookies().get("user")?.value;
 
     if (date === "" || type === "" || daytime === "" || cause === "" || meds === undefined)
-        return { message: "Some inputs are empty", variant: "error" }
+        return { message: "Error: Some inputs are empty", variant: "error" }
 
     if (!user || user === "")
-        return { message: "User is missing. Try refreshing page", variant: "error" }
+        return { message: "Error: User is missing. Try refreshing page", variant: "error" }
 
     const { id } = JSON.parse(user);
 
@@ -43,7 +43,7 @@ export const addRecord = async (formData: FormData): Promise<Output> => {
         });
 
         if (found)
-            return { message: "Record already exists", variant: "error" };
+            return { message: "Error: Record already exists", variant: "error" };
 
         const record = await prisma.records.create({
             data: {
@@ -56,9 +56,9 @@ export const addRecord = async (formData: FormData): Promise<Output> => {
             }
         });
 
-        return { message: "Records added", variant: "success", record }
+        return { message: "Success: Records added", variant: "success", record }
     } catch (error) {
-        return { message: "Something went wrong", variant: "error" }
+        return { message: "Error: Something went wrong", variant: "error" }
     }
 }
 

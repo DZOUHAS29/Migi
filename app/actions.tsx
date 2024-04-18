@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from "next/headers";
 import prisma from '@/prisma-client';
-import { Output, User } from './interfaces';
+import { InfoProps, Output, User } from './interfaces';
 
 const signTokens = async (user: User): Promise<void> => {
     const payload = {
@@ -81,9 +81,9 @@ export const register = async (formData: FormData): Promise<Output> => {
         //vygenerovat a přiřadit JWT token
         await signTokens(user);
 
-        return { message: "User successfully added", variant: "success", user };
+        return { message: "Success: User successfully added", variant: "success", user };
     } catch (error) {
-        return { message: `${error}`, variant: "error" };
+        return { message: `Error: ${error}`, variant: "error" };
     }
 }
 
@@ -118,9 +118,9 @@ export const login = async (formData: FormData): Promise<Output> => {
         //vygenerovat a přiřadit JWT token
         await signTokens(user)
 
-        return { message: "Successfully logged in", variant: "success", user };
+        return { message: "Success: Successfully logged in", variant: "success", user };
     } catch (error) {
-        return { message: `${error}`, variant: "error" };
+        return { message: `Error:${error}`, variant: "error" };
     }
 }
 
@@ -128,7 +128,7 @@ export const refresh = async (): Promise<Output> => {
     const user = cookies().get("user")?.value;
 
     if (!user)
-        return { message: "User doesn't exist", variant: "error" };
+        return { message: "Error: User doesn't exist", variant: "error" };
 
     const { id } = JSON.parse(user);
 
@@ -143,7 +143,7 @@ export const refresh = async (): Promise<Output> => {
         });
 
         if (!token)
-            return { message: "Refresh token doesn't exist", variant: "error" };
+            return { message: "Error: Refresh token doesn't exist", variant: "error" };
 
         const key = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
 
@@ -164,9 +164,9 @@ export const refresh = async (): Promise<Output> => {
             path: "/"
         });
 
-        return { message: "New Access token signed", variant: "success" };
+        return { message: "Success: New Access token signed", variant: "success" };
     } catch (error) {
-        return { message: "Refresh token failed", variant: "error" };
+        return { message: "Error: Refresh token failed", variant: "error" };
     }
 }
 
@@ -174,16 +174,77 @@ export const getUser = async (): Promise<Output> => {
     const user = cookies().get("user")?.value;
 
     if (!user)
-        return { variant: "error", message: "user cookie not found" };
+        return { variant: "error", message: "Error: User cookie not found" };
 
     const parse = JSON.parse(user);
 
-    return { variant: "success", message: "user cookie found", user: parse }
+    return { variant: "success", message: "Success: User cookie found", user: parse }
 }
 
 export const logOut = async (): Promise<Output> => {
     cookies().delete("jwt");
     cookies().delete("user");
 
-    return { variant: "success", message: "user log out" }
+    return { variant: "success", message: "Success: User log out" }
+}
+
+export const changeInfo = async ({ username, email, old, password, check }: InfoProps): Promise<number | string> => {
+    const user = cookies().get("user")?.value;
+
+    if (!user)
+        return "Error: User not found";
+
+    const { id } = JSON.parse(user);
+
+    try {
+        if (old === "") {
+            const user = await prisma.users.update({
+                where: {
+                    id
+                },
+                data: {
+                    username,
+                    email
+                }
+            });
+
+            cookies().set("user", JSON.stringify(user));
+
+            return 200;
+        }
+
+        const dbPassword = await prisma.users.findFirst({
+            where: {
+                id
+            },
+            select: {
+                password: true
+            }
+        });
+
+        if (!await bcrypt.compare(old, dbPassword?.password as string))
+            return "Error: Password is wrong!";
+
+        if (password !== check)
+            return "Error: Passwords don't match!";
+
+        const hash = await bcrypt.hash(`${password}`, 10);
+
+        const user = await prisma.users.update({
+            where: {
+                id
+            },
+            data: {
+                username,
+                email,
+                password: hash
+            }
+        });
+
+        cookies().set("user", JSON.stringify(user));
+
+        return 200;
+    } catch (error) {
+        return "Error: Server error";
+    }
 }

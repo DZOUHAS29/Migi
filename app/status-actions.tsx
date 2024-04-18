@@ -26,7 +26,7 @@ export const checkHealth = async (): Promise<Output> => {
 
         return { variant: "success", message: "bad", notification };
     } catch (error) {
-        return { variant: "error", message: "health check bug" };
+        return { variant: "error", message: "Error: Something went wrong" };
     }
 }
 

@@ -61,3 +61,11 @@ export interface GraphProps {
     parts: number[],
     types: number[]
 }
+
+export interface InfoProps {
+    username: string;
+    email: string;
+    old: string;
+    password: string;
+    check: string;
+}
