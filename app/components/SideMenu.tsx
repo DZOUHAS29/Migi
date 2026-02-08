@@ -4,7 +4,6 @@ import { IoStatsChart } from "@react-icons/all-files/io5/IoStatsChart";
 import { IoIosSettings } from "@react-icons/all-files/io/IoIosSettings";
 import { BiLogOut } from "@react-icons/all-files/bi/BiLogOut";
 import { Button, Divider, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { logOut } from "../actions";
 import { useAuth } from "../contexts/auth";

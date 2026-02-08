@@ -17,7 +17,7 @@ const assignSession = (user: User) => {
         secure: true,
         sameSite: "strict",
         path: "/",
-        //maxAge: 60 * 60 * 24 * 7,
+        maxAge: 60 * 60 * 24 * 7,
     });
 
     cookies().set({
@@ -27,10 +27,10 @@ const assignSession = (user: User) => {
         secure: true,
         sameSite: "strict",
         path: "/",
-        //maxAge: 60 * 60 * 24 * 7,
+        maxAge: 60 * 60 * 24 * 7,
     });
 
-    redis?.set(`session:${sessionId}`, JSON.stringify(user));
+    redis?.set(`session:${sessionId}`, JSON.stringify(user), "EX", 60 * 60 * 24 * 7);
 }
 
 export const register = async (formData: FormData): Promise<Output> => {
