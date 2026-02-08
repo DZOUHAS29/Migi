@@ -7,6 +7,8 @@ import { Button, Divider, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, 
 import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { logOut } from "../actions";
+import { useAuth } from "../contexts/auth";
+import { useRecords } from "../contexts/records";
 
 type props = {
     open: boolean;
@@ -15,6 +17,8 @@ type props = {
 
 export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
     const router = useRouter();
+    const { setAuth } = useAuth();
+    const { setRecords } = useRecords();
 
     const handleClose = () => {
         setOpen(false);
@@ -26,6 +30,8 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
 
     const handleLogout = () => {
         logOut();
+        setAuth({ id: -1, email: "", username: "" });
+        setRecords([]);
         router.push("/login");
         setOpen(false);
     };

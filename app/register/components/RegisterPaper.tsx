@@ -33,7 +33,7 @@ export default function RegisterPaper() {
             email: user.email
         }));
 
-        return redirect("/");
+        return redirect("/register");
     }
 
     return (
@@ -86,7 +86,7 @@ export default function RegisterPaper() {
                     <button className="bg-light-blue shadow-sm text-white hover:bg-light-dark-blue p-2 rounded" formAction={submit}>Register</button>
                 </div>
                 <div className="grid justify-center p-2">
-                    <Link href={"/"} className="text-sm underline ">Log in</Link>
+                    <Link href={"/login"} className="text-sm underline ">Log in</Link>
                 </div>
             </div>
         </form>
