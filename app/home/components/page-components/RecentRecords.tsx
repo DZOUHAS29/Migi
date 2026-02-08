@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
 import { RecentCard } from "../recent-records-comps/RecentCard";
-import prisma from "@/prisma-client";
 import { Divider } from "@chakra-ui/react";
+import { getCollection } from '@/lib/mongo';
+import { ObjectId } from 'mongodb';
+import { getUser } from "@/app/actions";
 
 interface RecordsProps {
     id: number;
@@ -18,25 +20,19 @@ export const RecentRecords = async () => {
     const getRecords = async (): Promise<RecordsProps[] | null> => {
         "use server"
 
-        const user = cookies().get("user")?.value;
-
-        if (!user)
-            return null;
-
-        const { id } = JSON.parse(user);
-
         try {
-            const records = await prisma.records.findMany({
-                where: {
-                    user_id: id
-                },
-                orderBy: {
-                    id: "desc"
-                },
-                take: 6
-            });
+            const user = (await getUser()).user;
 
-            return records;
+            if (!user)
+                return null;
+
+            const recordsColl = await getCollection('records');
+
+            if (!recordsColl) return null;
+
+            const records = await recordsColl.find({ user: user.id }).sort({ createdAt: -1 }).limit(6).toArray();
+
+            return records as unknown as RecordsProps[];
         } catch (error) {
             return null;
         }

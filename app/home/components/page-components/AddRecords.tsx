@@ -1,9 +1,9 @@
 import { addRecord } from "@/app/record-actions";
 import { useAddData } from "@/app/contexts/add-data";
-import { useSocket } from "@/app/contexts/socket";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Select, RadioGroup, Stack, Radio, useToast, ToastId } from "@chakra-ui/react";
 import { RecordsProps } from "@/app/interfaces";
 import { checkHealth } from "@/app/status-actions";
+import { useRecords } from "@/app/contexts/records";
 
 const types = [
     "Headache",
@@ -18,11 +18,13 @@ const parts = [
 
 export default function AddRecord() {
     const { date, open, closeAdd } = useAddData();
-    const { socket } = useSocket();
     const toast = useToast();
+    const { setRecords } = useRecords();
 
     const handle = async (formData: FormData): Promise<ToastId | void> => {
         const data = await addRecord(formData);
+
+        if (!data) return;
 
         if (data.variant === "error")
             return toast({
@@ -33,12 +35,10 @@ export default function AddRecord() {
                 position: "bottom-left"
             });
 
-        socket?.emit("add", { record: data.record as RecordsProps });
+        await checkHealth();
 
-        const health = await checkHealth();
-
-        if (health.notification && typeof health !== "number")
-            socket?.emit("add-notification", { notification: health.notification });
+        if (data.record)
+            setRecords(prev => [...prev, data.record as RecordsProps]);
 
         closeAdd();
     }

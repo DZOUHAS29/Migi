@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Notification } from '../interfaces';
 import { getNotifications } from "../status-actions";
 import { GrStatusWarningSmall } from "@react-icons/all-files/gr/GrStatusWarningSmall";
-import { useSocket } from "../contexts/socket";
 import { NotificationBody } from "./NotificationBody";
 
 type props = {
@@ -13,7 +12,6 @@ type props = {
 
 export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const { socket } = useSocket();
 
     const handleClose = () => {
         setOpen(false);
@@ -31,27 +29,6 @@ export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
     useEffect(() => {
         getData();
     }, [])
-
-    useEffect(() => {
-        socket?.on("new-notification", notification => {
-            if (typeof notification === "number")
-                return;
-
-            setNotifications(notifications => [...notifications, notification]);
-        });
-
-        socket?.on("remove-notification", ({ id }) => {
-            if (!id)
-                return;
-
-            setNotifications(notifications => notifications.filter(item => item.id !== id));
-        });
-
-        return () => {
-            socket?.off("new-notification");
-            socket?.off("remove-notification");
-        }
-    }, [socket])
 
     return (
         <Drawer

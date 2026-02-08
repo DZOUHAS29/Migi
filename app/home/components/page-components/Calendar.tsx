@@ -11,16 +11,12 @@ import { FiSun } from "@react-icons/all-files/fi/FiSun";
 import { FiSunset } from "@react-icons/all-files/fi/FiSunset";
 import { getRecords } from "@/app/record-actions";
 import { RecordsProps } from "@/app/interfaces";
-import { useSocket } from "@/app/contexts/socket";
-import { useRouter } from "next/navigation";
 import RecordInfo from "../day-card-comps/RecordInfo";
 import { useRecords } from "@/app/contexts/records";
 
 export const Calendar = () => {
     const [date, setDate] = useState<string>(moment().format("YYYY-MM-DD"));
     const [dates, setDates] = useState<string[]>([]);
-    const { socket } = useSocket();
-    const router = useRouter();
     const { setRecords, records } = useRecords();
 
     const getDates = (): void => {
@@ -55,25 +51,6 @@ export const Calendar = () => {
     useEffect(() => {
         getData();
     }, [dates])
-
-    useEffect(() => {
-        socket?.on("addedRecord", (record: RecordsProps) => {
-            const { id, date, day_part, type, cause, meds } = record;
-
-            setRecords(records => [...records, { id, date: date, day_part, type, cause, meds }]);
-            router.refresh();
-        });
-
-        socket?.on("removedRecord", (id: number) => {
-            setRecords(records => records.filter(record => record.id !== id));
-            router.refresh();
-        });
-
-        return () => {
-            socket?.off("addedRecord");
-            socket?.off("removedRecord");
-        }
-    }, [socket]);
 
     return (
         <AddDataContextProvider>

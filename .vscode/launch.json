@@ -21,12 +21,6 @@
             "url": "http://localhost:3000"
         },
         {
-            "name": "Socket.io server",
-            "type": "node-terminal",
-            "request": "launch",
-            "command": "npm run socket"
-        },
-        {
             "name": "Next.js: debug full stack",
             "type": "node-terminal",
             "request": "launch",

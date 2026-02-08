@@ -5,11 +5,6 @@ import { useAuth } from "../contexts/auth";
 import { useEffect, useState } from "react";
 import { changeInfo, getUser } from "../actions";
 
-interface WarningProps {
-    message: string;
-    variant: boolean;
-}
-
 export default function Settings() {
     const [name, setName] = useState<string>("");
     const [mail, setMail] = useState<string>("");
@@ -31,9 +26,9 @@ export default function Settings() {
     const handleChange = async (): Promise<ToastId | void> => {
         if (name === "" || mail === "")
             return toast({
-                title: 'Error',
+                title: "Error",
                 description: "Username or Email must not be empty!",
-                status: 'error',
+                status: "error",
                 duration: 3000,
                 isClosable: true,
                 position: "bottom-left"
@@ -45,16 +40,16 @@ export default function Settings() {
         if (typeof status === "string")
             return toast({
                 title: status,
-                status: 'error',
+                status: "error",
                 duration: 5000,
                 isClosable: true,
                 position: "bottom-left"
             });
 
         toast({
-            title: 'Succesfully changed',
+            title: "Succesfully changed",
             description: "You're information has been succesfully changed!",
-            status: 'success',
+            status: "success",
             duration: 3000,
             isClosable: true,
             position: "bottom-left"

@@ -49,6 +49,7 @@ export interface Output {
     user?: User;
     record?: RecordsProps;
     notification?: Notification;
+    code?: number;
 }
 
 export interface Notification {

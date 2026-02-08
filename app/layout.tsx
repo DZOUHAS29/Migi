@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import TopBar from './components/TopBar';
-import Auth from './auth';
+import { connectMongo } from '@/lib/mongo';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -12,11 +12,13 @@ export const metadata: Metadata = {
   description: 'Track your headaches!',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  await connectMongo();
+
   return (
     <html lang="en">
       <body className={`${inter.className} bg-ucla-blue h-screen text-white`}>

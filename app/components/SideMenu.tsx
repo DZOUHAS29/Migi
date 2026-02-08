@@ -25,7 +25,6 @@ export const SideMenu: React.FC<props> = ({ open, setOpen }) => {
     };
 
     const handleLogout = () => {
-        sessionStorage.clear();
         logOut();
         router.push("/login");
         setOpen(false);

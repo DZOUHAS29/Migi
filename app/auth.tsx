@@ -1,18 +1,18 @@
 "use client"
-import { redirect } from "next/navigation";
 import { useAuth } from "./contexts/auth";
 import { useEffect } from "react";
-import { cookies } from "next/headers";
 import { getUser } from "./actions";
+import { useRouter } from "next/navigation";
 
 export default function Auth() {
     const { auth, setAuth } = useAuth();
+    const router = useRouter();
 
     const configUser = async () => {
         const { user } = await getUser();
 
         if (!user)
-            return console.log("undefined");
+            return router.push("/login");
 
         if (auth.id === user.id)
             return;

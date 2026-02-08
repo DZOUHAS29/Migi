@@ -10,28 +10,13 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/auth";
 import { useRouter } from "next/navigation";
 import { NotificationsMenu } from "./NotificationsMenu";
-import { useSocket } from "../contexts/socket";
 
 export default function TopBar() {
     const [open, setOpen] = useState<boolean>(false);
     const [notifi, setNotifi] = useState<boolean>(false);
     const [count, setCount] = useState<number>(0);
     const { auth } = useAuth();
-    const { socket } = useSocket();
     const router = useRouter();
-
-    useEffect(() => {
-        socket?.on("new-notification", notification => {
-            if (typeof notification === "number")
-                return;
-
-            setCount(count => count + 1);
-        });
-
-        return () => {
-            socket?.off("new-notification");
-        }
-    }, [socket])
 
     useEffect(() => {
         if (notifi && count > 0)

@@ -1,8 +1,9 @@
 "use server"
-import { cookies } from 'next/headers';
 import { Output, RecordsProps } from './interfaces';
-import prisma from '@/prisma-client';
 import moment from 'moment';
+import { getCollection } from '@/lib/mongo';
+import { getUser } from './actions';
+import { ObjectId } from 'mongodb';
 
 interface PrevProps {
     freq: number;
@@ -23,42 +24,45 @@ export const addRecord = async (formData: FormData): Promise<Output> => {
     const daytime = formData.get("daytime")?.toString();
     const cause = formData.get("cause")?.toString();
     const meds: boolean = formData.get("meds") === "true" ? true : false;
-    const user = cookies().get("user")?.value;
 
     if (date === "" || type === "" || daytime === "" || cause === "" || meds === undefined)
-        return { message: "Error: Some inputs are empty", variant: "error" }
-
-    if (!user || user === "")
-        return { message: "Error: User is missing. Try refreshing page", variant: "error" }
-
-    const { id } = JSON.parse(user);
+        return { message: "Some inputs are empty", variant: "error" }
 
     try {
-        const found = await prisma.records.findFirst({
-            where: {
-                user_id: id,
-                date: new Date(date as string),
-                day_part: daytime
-            }
+        const user = (await getUser()).user;
+
+        if (!user)
+            return { message: "user not found", variant: "error" }
+
+        const recordsColl = await getCollection("records");
+
+        if (!recordsColl)
+            return { message: "collection not found", variant: "error" }
+
+        const found = await recordsColl.findOne({
+            user: user.id,
+            date: new Date(date as string),
+            day_part: daytime
         });
 
         if (found)
-            return { message: "Error: Record already exists", variant: "error" };
+            return { message: "record already exists", variant: "error" };
 
-        const record = await prisma.records.create({
-            data: {
-                user_id: id,
-                date: new Date(date as string),
-                type: type as string,
-                cause: cause as string,
-                day_part: daytime as string,
-                meds: meds
-            }
+        const insert = await recordsColl.insertOne({
+            user: user.id,
+            date: new Date(date as string),
+            type: type as string,
+            cause: cause as string,
+            day_part: daytime as string,
+            meds: meds,
+            createdAt: new Date(),
         });
 
-        return { message: "Success: Records added", variant: "success", record }
+        const record = await recordsColl.findOne({ _id: new ObjectId(insert.insertedId) });
+
+        return { message: "records added", variant: "success", record: { id: record?._id.toString(), ...record } as unknown as RecordsProps }
     } catch (error) {
-        return { message: "Error: Something went wrong", variant: "error" }
+        return { message: "something went wrong", variant: "error" }
     }
 }
 
@@ -66,24 +70,27 @@ export const getRecords = async (week: string[]): Promise<number | RecordsProps[
     if (week.length <= 0)
         return 500;
 
-    const user = cookies().get("user")?.value;
-
-    if (!user)
-        return 500;
-
-    const { id } = JSON.parse(user);
-
     try {
-        const data = await prisma.records.findMany({
-            where: {
-                user_id: id,
-                date: {
-                    in: week.map(day => new Date(day))
-                }
-            },
-        });
+        const user = (await getUser()).user;
 
-        return data;
+        if (!user)
+            return 403;
+
+        const recordsColl = await getCollection("records");
+
+        if (!recordsColl) return 404;
+
+        const raw = await recordsColl.find({
+            user: user.id,
+            date: { $in: week.map(day => new Date(day)) }
+        }).toArray();
+
+        const data = raw.map(doc => ({
+            ...doc,
+            id: doc._id?.toString()
+        }));
+
+        return data as unknown as RecordsProps[];
     } catch (error) {
         return 500;
     }
@@ -91,13 +98,13 @@ export const getRecords = async (week: string[]): Promise<number | RecordsProps[
 
 export const getFilters = async (): Promise<string[] | number> => {
     try {
-        const data = await prisma.records.groupBy({
-            by: "cause"
-        });
+        const recordsColl = await getCollection("records");
 
-        const filters: string[] = data.map(item => item.cause);
+        if (!recordsColl) return 404;
 
-        return filters;
+        const filters = await recordsColl.distinct("cause");
+
+        return filters as string[];
     } catch (error) {
         return 500;
     }
@@ -116,34 +123,31 @@ const getDates = (date: string): string[] => {
 };
 
 export const getPrev = async (date: string): Promise<PrevProps | number> => {
-    const user = cookies().get("user")?.value;
-
-    if (!date || date === "" || !user)
+    if (!date || date === "")
         return 400;
 
-    const { id } = JSON.parse(user);
-
     try {
+        const user = (await getUser()).user;
+
+        if (!user)
+            return 403;
+
         const week = getDates(date);
 
-        const count = await prisma.records.count({
-            where: {
-                user_id: id,
-                date: {
-                    in: week.map(day => new Date(day))
-                },
-            }
-        })
+        const recordsColl = await getCollection("records");
 
-        const migraineCount = await prisma.records.count({
-            where: {
-                user_id: id,
-                date: {
-                    in: week.map(day => new Date(day))
-                },
-                type: "Migraine"
-            }
-        })
+        if (!recordsColl) return 404;
+
+        const count = await recordsColl.countDocuments({
+            user: user.id,
+            date: { $in: week.map(day => new Date(day)) }
+        });
+
+        const migraineCount = await recordsColl.countDocuments({
+            user: user.id,
+            date: { $in: week.map(day => new Date(day)) },
+            type: "Migraine"
+        });
 
         return { freq: count, migraines: migraineCount };
     } catch (error) {
@@ -151,17 +155,28 @@ export const getPrev = async (date: string): Promise<PrevProps | number> => {
     }
 }
 
-export const RemoveRecord = async (id: number): Promise<number> => {
+export const RemoveRecord = async (id: string | number): Promise<string | number> => {
     if (!id)
         return 400;
-    try {
-        await prisma.records.delete({
-            where: {
-                id
-            }
-        })
 
-        return 200;
+    try {
+        const user = (await getUser()).user;
+
+        if (!user)
+            return 403;
+
+        const recordsColl = await getCollection("records");
+
+        if (!recordsColl) return 404;
+
+        const record = await recordsColl.findOne({ _id: new ObjectId(id as string) });
+
+        if (!record || record.user !== user.id)
+            return 403;
+
+        await recordsColl.deleteOne({ _id: new ObjectId(id as string) });
+
+        return id;
     } catch (error) {
         console.log(error);
         return 500;
@@ -169,13 +184,6 @@ export const RemoveRecord = async (id: number): Promise<number> => {
 }
 
 export const monthlyCount = async (): Promise<number[] | number> => {
-    const user = cookies().get("user");
-
-    if (!user || !user.value)
-        return 304;
-
-    const { id } = JSON.parse(user.value);
-
     const currentMonth = moment().month() + 1;
     const currentYear = moment().year();
     const monthLength = [];
@@ -185,12 +193,24 @@ export const monthlyCount = async (): Promise<number[] | number> => {
     }
 
     try {
-        const records: RecordsProps[] = await prisma.$queryRaw`SELECT * FROM records WHERE YEAR(date) = ${currentYear} AND user_id = ${id}`;
+        const user = (await getUser()).user;
 
-        if (!records)
+        if (!user)
             return 403;
 
-        const data = monthLength.map(month => records.filter(({ date }) => moment(date).month() + 1 === month).length)
+        const start = moment().year(currentYear).startOf("year").toDate();
+        const end = moment().year(currentYear).endOf("year").toDate();
+
+        const recordsColl = await getCollection("records");
+
+        if (!recordsColl) return 404;
+
+        const records = await recordsColl.find({ user: user.id, date: { $gte: start, $lte: end } }).toArray();
+
+        if (!records)
+            return 404;
+
+        const data = monthLength.map(month => records.filter(({ date }) => moment(date).month() + 1 === month).length);
 
         return data;
     } catch (error) {
@@ -199,13 +219,6 @@ export const monthlyCount = async (): Promise<number[] | number> => {
 }
 
 export const csvRecords = async (): Promise<FormatProps[] | number> => {
-    const user = cookies().get("user");
-
-    if (!user || !user.value)
-        return 304;
-
-    const { id } = JSON.parse(user.value);
-
     const currentMonth = moment().month() + 1;
     const currentYear = moment().year();
     const monthLength: number[] = [];
@@ -215,10 +228,22 @@ export const csvRecords = async (): Promise<FormatProps[] | number> => {
     }
 
     try {
-        const records: RecordsProps[] = await prisma.$queryRaw`SELECT date, type, cause, meds, day_part FROM records WHERE YEAR(date) = ${currentYear} AND user_id = ${id} ORDER BY date DESC`;
+        const user = (await getUser()).user;
+
+        if (!user)
+            return 403;
+
+        const start = moment().year(currentYear).startOf("year").toDate();
+        const end = moment().year(currentYear).endOf("year").toDate();
+
+        const recordsColl = await getCollection("records");
+
+        if (!recordsColl) return 404;
+
+        const records = await recordsColl.find({ user: user.id, date: { $gte: start, $lte: end } }, { projection: { date: 1, type: 1, cause: 1, meds: 1, day_part: 1 } }).sort({ date: -1 }).toArray();
 
         if (!records)
-            return 403;
+            return 404;
 
         const data = records.filter(({ date }) => monthLength.find(month => month === moment(date).month()));
 
@@ -228,7 +253,7 @@ export const csvRecords = async (): Promise<FormatProps[] | number> => {
             array.push(row);
 
             return array;
-        }, []);
+        }, [] as FormatProps[]);
 
         return format;
     } catch (error) {

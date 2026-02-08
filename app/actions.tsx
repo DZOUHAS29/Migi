@@ -1,50 +1,36 @@
 "use server"
 import bcrypt from 'bcrypt';
-import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from "next/headers";
-import prisma from '@/prisma-client';
 import { InfoProps, Output, User } from './interfaces';
+import { redis } from "../lib/redis";
+import { getCollection } from '@/lib/mongo';
 
-const signTokens = async (user: User): Promise<void> => {
-    const payload = {
-        sub: user.id as string,
-        username: user.username,
-        role: "user"
-    }
+const assignSession = (user: User) => {
+    const sessionId = (typeof crypto !== "undefined" && (crypto as any).randomUUID)
+        ? (crypto as any).randomUUID()
+        : Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
 
-    const secret = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
-    //const refreshSecret = new TextEncoder().encode(process.env.JWT_SIGN_REFRESH_SECRET);
-
-    const token = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("2h").setIssuedAt().sign(secret);
-    //const refresh = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(refreshSecret);
-
-    //uloží do local storage refresh token
-
-    //nastavit secure cookie pro token
     cookies().set({
-        name: "jwt",
-        value: token,
+        name: "session",
+        value: sessionId,
         httpOnly: true,
-        sameSite: "strict",
         secure: true,
-        maxAge: 60 * 60 * 2,
-        path: "/"
+        sameSite: "strict",
+        path: "/",
+        //maxAge: 60 * 60 * 24 * 7,
     });
 
-    //nastavit usera
     cookies().set({
         name: "user",
-        value: JSON.stringify({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-        }),
-        httpOnly: true,
-        sameSite: "strict",
+        value: JSON.stringify(user),
+        httpOnly: false,
         secure: true,
-        maxAge: 60 * 60 * 2,
-        path: "/"
+        sameSite: "strict",
+        path: "/",
+        //maxAge: 60 * 60 * 24 * 7,
     });
+
+    redis?.set(`session:${sessionId}`, JSON.stringify(user));
 }
 
 export const register = async (formData: FormData): Promise<Output> => {
@@ -54,7 +40,6 @@ export const register = async (formData: FormData): Promise<Output> => {
     const repassword = formData.get("repassword");
 
     try {
-        //kontrola inputů
         if (username === "" || email === "" || password === "" || repassword === "" || !password)
             throw new Error("Some inputs are empty");
 
@@ -66,24 +51,32 @@ export const register = async (formData: FormData): Promise<Output> => {
         if (password !== repassword)
             throw new Error("Passwords don't match");
 
-        //hash hesla
         const hash = await bcrypt.hash(`${password}`, 10);
 
-        //přidání usera do db
-        const user = await prisma.users.create({
-            data: {
-                username: username as string,
-                email: email as string,
-                password: hash as string
-            }
+        const users = await getCollection("users");
+
+        if (!users)
+            return { message: "collection not found", variant: "error" }
+
+        const data = await users.insertOne({
+            username: username as string,
+            email: email as string,
+            password: hash as string,
         });
 
-        //vygenerovat a přiřadit JWT token
-        await signTokens(user);
+        const created = await users.findOne({ _id: data.insertedId });
 
-        return { message: "Success: User successfully added", variant: "success", user };
+        const user = {
+            id: data.insertedId.toString(),
+            username: created?.username as string,
+            email: created?.email as string
+        }
+
+        assignSession(user);
+
+        return { message: "user successfully added", variant: "success", user };
     } catch (error) {
-        return { message: `Error: ${error}`, variant: "error" };
+        return { message: `${error}`, variant: "error" };
     }
 }
 
@@ -92,159 +85,114 @@ export const login = async (formData: FormData): Promise<Output> => {
     const password = formData.get("password");
 
     try {
-        //kontrola inputů
         if (name === "" || password === "")
             throw new Error("Some inputs are empty");
 
-        const user = await prisma.users.findFirst({
-            where: {
-                OR: [
-                    {
-                        username: name as string
-                    },
-                    {
-                        email: name as string
-                    }
-                ]
-            }
+        const users = await getCollection("users");
+
+        if (!users)
+            throw new Error("Users collection not found");
+
+        const found = await users.findOne({
+            $or: [{ username: name as string }, { email: name as string }]
         });
 
-        if (!user)
+        if (!found)
             throw new Error("User doesn't exist");
 
-        if (!await bcrypt.compare(password as string, user.password))
+        if (!await bcrypt.compare(password as string, found.password as string))
             throw new Error("Password is incorrect");
 
-        //vygenerovat a přiřadit JWT token
-        await signTokens(user)
+        const user = {
+            id: found._id.toString(),
+            username: found.username as string,
+            email: found.email as string
+        };
 
-        return { message: "Success: Successfully logged in", variant: "success", user };
+        assignSession(user);
+
+        return { message: "successfully logged in", variant: "success", user };
     } catch (error) {
         return { message: `${error}`, variant: "error" };
     }
 }
 
-export const refresh = async (): Promise<Output> => {
-    const user = cookies().get("user")?.value;
-
-    if (!user)
-        return { message: "Error: User doesn't exist", variant: "error" };
-
-    const { id } = JSON.parse(user);
-
-    try {
-        const token = await prisma.refresh_tokens.findFirst({
-            where: {
-                user_id: id
-            },
-            orderBy: {
-                id: "desc"
-            }
-        });
-
-        if (!token)
-            return { message: "Error: Refresh token doesn't exist", variant: "error" };
-
-        const key = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
-
-        //zkontroluje refresh token
-        const { payload } = await jwtVerify(token.token, key);
-
-        //pokud je refresh token v pohodě přiřadí novej token
-        const access = await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setExpirationTime("1h").setIssuedAt().sign(key);
-
-        //nastavit secure cookie pro token
-        cookies().set({
-            name: "jwt",
-            value: access,
-            httpOnly: true,
-            sameSite: "strict",
-            secure: true,
-            maxAge: 60 * 60,
-            path: "/"
-        });
-
-        return { message: "Success: New Access token signed", variant: "success" };
-    } catch (error) {
-        return { message: "Error: Refresh token failed", variant: "error" };
-    }
-}
-
 export const getUser = async (): Promise<Output> => {
-    const user = cookies().get("user")?.value;
+    const sessionCookie = cookies().get("session");
+
+    if (!sessionCookie || !sessionCookie.value)
+        return { variant: "error", message: "session not found", code: 403 };
+
+    const sessionId = sessionCookie.value;
+
+    const user = await redis?.get(`session:${sessionId}`);
 
     if (!user)
-        return { variant: "error", message: "Error: User cookie not found" };
+        return { variant: "error", message: "session not found", code: 403 };
 
-    const parse = JSON.parse(user);
-
-    return { variant: "success", message: "Success: User cookie found", user: parse }
+    return { variant: "success", message: "user found", user: JSON.parse(user) }
 }
 
 export const logOut = async (): Promise<Output> => {
-    cookies().delete("jwt");
-    cookies().delete("user");
+    const sessionCookie = cookies().get("session");
 
-    return { variant: "success", message: "Success: User log out" }
+    try {
+        const sessionId = sessionCookie?.value;
+
+        if (sessionId)
+            await redis?.del(`session:${sessionId}`);
+
+        cookies().delete("session");
+        cookies().delete("user");
+
+        return { variant: "success", message: "user log out" };
+    } catch (error) {
+        return { variant: "error", message: "user log out error", code: 500 };
+    }
+
 }
 
 export const changeInfo = async ({ username, email, old, password, check }: InfoProps): Promise<number | string> => {
-    const user = cookies().get("user")?.value;
+    const userCookie = cookies().get("user");
 
-    if (!user)
-        return "Error: User not found";
+    if (!userCookie || !userCookie.value)
+        return "user not found";
 
-    const { id } = JSON.parse(user);
+    const { id } = JSON.parse(userCookie.value);
 
     try {
-        if (old === "") {
-            const user = await prisma.users.update({
-                where: {
-                    id
-                },
-                data: {
-                    username,
-                    email
-                }
-            });
+        const users = await getCollection("users");
 
-            cookies().set("user", JSON.stringify(user));
+        if (!users) return "server error";
+
+        if (old === "") {
+            const result = await users.findOneAndUpdate({ id }, { $set: { username, email } }, { returnDocument: "after" });
+
+            if (result) {
+                cookies().set({ name: "user", value: JSON.stringify(result), httpOnly: false, secure: true, sameSite: "strict", path: "/" });
+            }
 
             return 200;
         }
 
-        const dbPassword = await prisma.users.findFirst({
-            where: {
-                id
-            },
-            select: {
-                password: true
-            }
-        });
+        const dbUser = await users.findOne({ id }, { projection: { password: 1 } });
 
-        if (!await bcrypt.compare(old, dbPassword?.password as string))
-            return "Error: Password is wrong!";
+        if (!dbUser || !await bcrypt.compare(old, dbUser.password as string))
+            return "Password is wrong";
 
         if (password !== check)
-            return "Error: Passwords don't match!";
+            return "Passwords don't match";
 
         const hash = await bcrypt.hash(`${password}`, 10);
 
-        const user = await prisma.users.update({
-            where: {
-                id
-            },
-            data: {
-                username,
-                email,
-                password: hash
-            }
-        });
+        const result = await users.findOneAndUpdate({ id }, { $set: { username, email, password: hash } }, { returnDocument: "after" });
 
-        cookies().set("user", JSON.stringify(user));
+        if (result) {
+            cookies().set({ name: "user", value: JSON.stringify(result), httpOnly: false, secure: true, sameSite: "strict", path: "/" });
+        }
 
         return 200;
     } catch (error) {
-        return "Error: Server error";
+        return "server error";
     }
 }

@@ -2,7 +2,6 @@
 import { CloseButton, Icon } from '@chakra-ui/react'
 import { GrStatusWarningSmall } from '@react-icons/all-files/gr/GrStatusWarningSmall'
 import React from 'react'
-import { useSocket } from "../contexts/socket";
 import { removeNotification } from '../status-actions';
 import { useRouter } from 'next/navigation';
 
@@ -12,7 +11,6 @@ interface NotificationBodyProps {
 }
 
 export const NotificationBody = ({ message, id }: NotificationBodyProps) => {
-    const { socket } = useSocket();
     const { push } = useRouter();
 
     const handleDelete = async () => {
@@ -20,8 +18,6 @@ export const NotificationBody = ({ message, id }: NotificationBodyProps) => {
 
         if (typeof removed === "number")
             return;
-
-        socket?.emit("delete-notification", { notification: removed });
     }
 
     return (

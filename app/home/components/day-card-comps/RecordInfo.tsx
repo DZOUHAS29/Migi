@@ -5,23 +5,21 @@ import { IoClose } from "@react-icons/all-files/io5/IoClose";
 import { IoIosCheckmark } from "@react-icons/all-files/io/IoIosCheckmark";
 import { useState } from "react";
 import { RemoveRecord } from "@/app/record-actions";
-import { useSocket } from "@/app/contexts/socket";
+import { useRecords } from "@/app/contexts/records";
 
 export default function RecordInfo() {
     const [warning, setWarning] = useState<string>("");
     const { open, closeAdd, record } = useRecordInfo();
-    const { socket } = useSocket();
+    const { setRecords } = useRecords();
 
     const deleteRecord = async (): Promise<void> => {
         if (!record?.id)
-            return setWarning("400: Something went wrong");
+            return setWarning("Something went wrong");
 
         const data = await RemoveRecord(record.id);
 
-        if (data !== 200)
-            return setWarning(`${data}: Something went wrong`);
-
-        socket?.emit("delete", record.id);
+        if (typeof data == "string")
+            setRecords(prev => prev.filter(r => r.id !== record.id));
 
         handle();
     }

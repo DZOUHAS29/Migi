@@ -26,16 +26,10 @@ export default function LoginPaper() {
 
         const { user } = data;
 
-        if (!user)
+        if (user)
             return redirect("/home");
 
-        sessionStorage.setItem("user", JSON.stringify({
-            id: user.id,
-            username: user.username,
-            email: user.email
-        }));
-
-        redirect("/");
+        redirect("/login");
     }
 
     return (
