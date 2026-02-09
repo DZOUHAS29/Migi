@@ -1,9 +1,10 @@
 import { addRecord } from "@/app/record-actions";
 import { useAddData } from "@/app/contexts/add-data";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Select, RadioGroup, Stack, Radio, useToast, ToastId } from "@chakra-ui/react";
-import { RecordsProps } from "@/app/interfaces";
+import { Notification, RecordsProps } from "@/app/interfaces";
 import { checkHealth } from "@/app/status-actions";
 import { useRecords } from "@/app/contexts/records";
+import { useNotifications } from "@/app/contexts/notifications";
 
 const types = [
     "Headache",
@@ -20,6 +21,7 @@ export default function AddRecord() {
     const { date, open, closeAdd } = useAddData();
     const toast = useToast();
     const { setRecords } = useRecords();
+    const { setNotifications } = useNotifications();
 
     const handle = async (formData: FormData): Promise<ToastId | void> => {
         const data = await addRecord(formData);
@@ -35,10 +37,13 @@ export default function AddRecord() {
                 position: "bottom-left"
             });
 
-        await checkHealth();
+        const health = await checkHealth();
 
         if (data.record)
             setRecords(prev => [...prev, data.record as RecordsProps]);
+
+        if (health.notification)
+            setNotifications(prev => [...prev, health.notification as Notification])
 
         closeAdd();
     }

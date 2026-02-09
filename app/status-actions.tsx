@@ -27,7 +27,6 @@ export const checkHealth = async (): Promise<Output> => {
         if (typeof notification === "number")
             return { variant: "success", message: "bad" };
 
-
         return { variant: "success", message: "bad", notification };
     } catch (error) {
         return { variant: "error", message: "Error: Something went wrong" };
@@ -63,7 +62,7 @@ export const addNotification = async (message: string): Promise<Notification | n
             createdAt: new Date(),
         });
 
-        const notification = await notifColl.findOne({ id: insert.insertedId });
+        const notification = await notifColl.findOne({ _id: new ObjectId(insert.insertedId) });
 
         return { id: notification?._id.toString(), ...notification } as unknown as Notification;
     } catch (error) {

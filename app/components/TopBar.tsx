@@ -7,9 +7,11 @@ import { BiUser } from "@react-icons/all-files/bi/BiUser"
 import Logo from "./Logo";
 import { SideMenu } from "./SideMenu";
 import { useEffect, useState } from "react";
+import { Notification } from "../interfaces";
 import { useAuth } from "../contexts/auth";
 import { useRouter } from "next/navigation";
 import { NotificationsMenu } from "./NotificationsMenu";
+import { useNotifications } from "../contexts/notifications";
 
 export default function TopBar() {
     const [open, setOpen] = useState<boolean>(false);
@@ -17,11 +19,11 @@ export default function TopBar() {
     const [count, setCount] = useState<number>(0);
     const { auth } = useAuth();
     const router = useRouter();
+    const { notifications } = useNotifications();
 
     useEffect(() => {
-        if (notifi && count > 0)
-            setCount(0);
-    }, [notifi])
+        setCount(notifications.length);
+    }, [notifications])
 
     return (
         <div className="flex pr-3">

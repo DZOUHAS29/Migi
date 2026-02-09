@@ -2,16 +2,15 @@ import { CloseButton, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, Draw
 import { useEffect, useState } from "react";
 import { Notification } from '../interfaces';
 import { getNotifications } from "../status-actions";
-import { GrStatusWarningSmall } from "@react-icons/all-files/gr/GrStatusWarningSmall";
 import { NotificationBody } from "./NotificationBody";
+import { useNotifications } from "../contexts/notifications";
 
-type props = {
+
+export const NotificationsMenu = ({ open, setOpen }: {
     open: boolean;
     setOpen: (value: boolean | ((prev: boolean) => boolean)) => void;
-}
-
-export const NotificationsMenu: React.FC<props> = ({ open, setOpen }) => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+}) => {
+    const { setNotifications, notifications } = useNotifications();
 
     const handleClose = () => {
         setOpen(false);

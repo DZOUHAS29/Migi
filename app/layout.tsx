@@ -5,11 +5,11 @@ import { Providers } from './providers';
 import TopBar from './components/TopBar';
 import { connectMongo } from '@/lib/mongo';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Migi App',
-  description: 'Track your headaches!',
+  title: "Migi App",
+  description: "Track your headaches!",
 }
 
 export default async function RootLayout({

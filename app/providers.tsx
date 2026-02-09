@@ -5,6 +5,7 @@ import { ChartsContextProvider } from './contexts/charts';
 import { RecordInfoContextProvider } from './contexts/record-info';
 import { RecordsContextProvider } from './contexts/records';
 import { AuthContextProvider } from './contexts/auth';
+import { NotificationsContextProvider } from './contexts/notifications';
 
 export function Providers({
   children
@@ -16,13 +17,15 @@ export function Providers({
     <CacheProvider>
       <ChakraProvider>
         <AuthContextProvider>
-            <ChartsContextProvider>
+          <ChartsContextProvider>
+            <NotificationsContextProvider>
               <RecordsContextProvider>
                 <RecordInfoContextProvider>
                   {children}
                 </RecordInfoContextProvider>
               </RecordsContextProvider>
-            </ChartsContextProvider>
+            </NotificationsContextProvider>
+          </ChartsContextProvider>
         </AuthContextProvider>
       </ChakraProvider>
     </CacheProvider>

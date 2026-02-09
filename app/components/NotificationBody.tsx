@@ -4,6 +4,7 @@ import { GrStatusWarningSmall } from '@react-icons/all-files/gr/GrStatusWarningS
 import React from 'react'
 import { removeNotification } from '../status-actions';
 import { useRouter } from 'next/navigation';
+import { useNotifications } from '../contexts/notifications';
 
 interface NotificationBodyProps {
     message: string;
@@ -12,12 +13,15 @@ interface NotificationBodyProps {
 
 export const NotificationBody = ({ message, id }: NotificationBodyProps) => {
     const { push } = useRouter();
+    const { setNotifications } = useNotifications();
 
     const handleDelete = async () => {
         const removed = await removeNotification(id);
 
         if (typeof removed === "number")
             return;
+
+        setNotifications(prev => prev.filter(n => n.id !== id))
     }
 
     return (
